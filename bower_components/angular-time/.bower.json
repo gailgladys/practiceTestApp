@@ -1,0 +1,14 @@
+{
+  "name": "angular-time",
+  "homepage": "https://github.com/rivalnick/time",
+  "_release": "c1a65d548f",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "c1a65d548fa3b82b5e4022a30ffe5f1bd53c5d46"
+  },
+  "_source": "https://github.com/rivalnick/time.git",
+  "_target": "*",
+  "_originalSource": "angular-time",
+  "_direct": true
+}

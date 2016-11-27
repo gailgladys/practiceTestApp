@@ -1,0 +1,42 @@
+<br><br><br>
+<table border="2" style="padding:30px;text-align:left;">
+<thead style="padding:10px;">
+  <th>
+    Student Name
+  </th>
+  <th>
+    Exams
+  </th>
+  <th>
+    Grade Average
+  </th>
+  <th>
+    Add an Exam
+  </th>
+</thead>
+<tbody id="row" style="padding:10px;">
+  <tr ng-repeat="student in vm.students">
+    <td class="student" value="$index">
+      {{student.username}}
+    </td>
+    <td>
+      <span ng-repeat="(key,value) in student.practiceTests">Exam {{key}}
+        <div class="row">
+          <div ng-repeat="(key,value) in value" class="col-xs-2">
+            SubExam {{key}}
+          </div>
+        </div>
+      </span>
+    </td>
+    <td>
+      85%
+    </td>
+    <td>
+      <div ng-repeat="exam in vm.examsAvailable[0].examAvailable">
+        <button ng-show="student.examsAvailable.indexOf(exam.toString())==-1" ng-click="vm.assignExam(student,exam,$parent.$index)" type="button" class="btn btn-success" name="button">{{exam}}</button>
+      </div>
+    </td>
+  </tr>
+</tbody>
+</table>
+<h1>{{vm.message}}</h1>

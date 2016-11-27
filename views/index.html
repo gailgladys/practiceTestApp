@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html ng-app="MyApp">
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="/bootstrap/dist/css/bootstrap.min.css" media="screen" title="no title" charset="utf-8">
+    <link rel="stylesheet" href="/bootstrap/dist/css/bootstrap-theme.min.css" media="screen" title="no title" charset="utf-8">
+    <link rel="stylesheet" href="/stylesheets/main.css" media="screen" title="no title" charset="utf-8">
+    <title>Gail App</title>
+    <base href="/" />
+  </head>
+
+  <body id="background" ng-controller="MainController as main"><nav class="navbar navbar-default navbar-fixed-top" id="jump_top">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" ui-sref="Index"><span class="glyphicon glyphicon-education"></span></a>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a uib-btn ui-sref="QuestionForm">New Questions</a></li>
+        <li><a uib-btn ui-sref="TestBank">Test Bank</a></li>
+        <li><a uib-btn ui-sref="PracticeTest">Practice Test</a></li>
+        <li><a uib-btn ui-sref="Admin">Admin</a></li>
+        <li><a uib-btn ui-sref="TestArray">Test Array</a></li>
+        <li><a uib-btn ui-sref="TestRandomizer">Test Randomizer</a></li>
+        <li id="navLoginName" ng-show="main.login()">Hello {{main.login()}}</li>
+      </ul>
+
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+          <button ng-show="!main.login()" class="btn btn-primary" id="log_in" ng-click="main.showModal()"><span class="glyphicon glyphicon-log-in" aria-hidden="true"></span>&nbsp;&nbsp;Sign in</button>
+          <button ng-show="main.login()" ng-click="main.logout()" class="btn btn-warning" id="log_in">Log out</button>
+        </li>
+      </ul>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
+
+    <ui-view></ui-view>
+
+
+
+    <script src="/jquery/dist/jquery.min.js" charset="utf-8"></script>
+    <script src="/angular/angular.min.js" charset="utf-8"></script>
+    <script src="/angular-bootstrap/ui-bootstrap-tpls.js" charset="utf-8"></script>
+    <script src="/angular-resource/angular-resource.min.js" charset="utf-8"></script>
+    <script src="/angular-ui-router/release/angular-ui-router.min.js" charset="utf-8"></script>
+    <script src="/angular-touch/angular-touch.min.js" charset="utf-8"></script>
+    <script src="/angular-animate/angular-animate.min.js" charset="utf-8"></script>
+    <script src="/angular-timer/dist/angular-timer.js" charset="utf-8"></script>
+    <script src="/humanize-duration/humanize-duration.js" charset="utf-8"></script>
+    <script src="/moment/moment.js" charset="utf-8"></script>
+    <script src="/javascripts/app.js" charset="utf-8"></script>
+    <script src="/javascripts/controllers.js" charset="utf-8"></script>
+    <script src="/javascripts/services.js" charset="utf-8"></script>
+  </body>
+</html>

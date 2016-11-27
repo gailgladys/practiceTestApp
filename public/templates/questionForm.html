@@ -1,0 +1,112 @@
+<br><br><br><br>
+<div class="container">
+  <div class="center">
+    <form ng-submit="ctrl.enterExamNum()" name="form" class="questionForm">
+      <label for="examNum">Enter an Exam Number: </label>
+      <input ng-keyup="$event.keyCode == 13 && ctrl.enterExamNum()" id="examNumInitial" ng-model="ctrl.examNum" type="number" min="1" max="99" name="examNum" value="">&nbsp &nbsp &nbsp
+      <input class="btn btn-success" type="submit" name="Submit" value="Submit">
+    </form>
+
+    <form ng-show="ctrl.formShow" class="questionForm" name="questionForm">
+      <div class="center">
+        <h4>Exam {{ctrl.displayExamNum}}</h4>
+        <input type="text" class="form-control input-sm" style="width: 250px!important;margin: 0 auto!important;font-size:18px;" ng-model="ctrl.examName" name="examName" placeholder="{{ctrl.displayExamName}}">
+      </div>
+      <h4>{{ctrl.message}}</h4>
+      <h3>Question {{ctrl.counter}}</h3>
+      <label for="question">Is this a Select Two question?&nbsp</label>
+      <span>
+        <label><input ng-model="ctrl.questions.selectTwo" type="checkbox" ng-true-value="'Y'" ng-false-value="''">&nbspYes</label>
+      </span>
+      <br>
+      <label for="question">Question:&nbsp&nbsp</label><span style="color: red" ng-show="questionForm.question.$error.required">This is required.</span><br>
+      <textarea autofocus="!ctrl.initial" style="margin-left:15px;" required id="questionTextarea" rows="4" cols="65" ng-model="ctrl.questions.question" name="question" tabindex="1"></textarea><br>
+      <!-- Radio header -->
+      <span style="float:left" ng-show="!ctrl.questions.selectTwo">
+        <label for="radio">The Correct Answer is: </label>
+      </span>
+      <!-- Checkbox header -->
+      <span style="float:left" ng-show="ctrl.questions.selectTwo">
+        <label for="radio">Correct Answers are:&nbsp&nbsp&nbsp</label>
+      </span>
+      <!-- Label A-->
+      <label style="margin-left:-164px" for="answerA">Answer A:&nbsp&nbsp</label><span style="color: red" ng-show="questionForm.answerA.$error.required">This is required.</span>
+      <br>
+      <!-- Radio A-->
+      <div ng-show="!ctrl.questions.selectTwo" class="radio-inline">
+        <label><input ng-change="ctrl.selectRad()" ng-model="ctrl.questions.correctAnswer" type="radio" value="A">Option A</label>
+      </div>
+      <!-- Checkbox A-->
+      <div ng-show="ctrl.questions.selectTwo=='Y'" class="checkbox-inline">
+        <label><input ng-change="ctrl.selectTwoLimit('A')" id="A" ng-model="ctrl.questions.correctAnswerA" type="checkbox" ng-true-value="'Y'" ng-false-value="'N'">Option A</label>
+      </div>
+      <!-- Input field A-->
+      <span><input style="display: inline-block" required ng-model="ctrl.questions.answerA"  class="form-control input-sm" type="text" name="answerA" value="" tabindex="2"></span><br>
+
+      <!-- Label B-->
+      <label for="answerB">Answer B:&nbsp&nbsp</label><span style="color: red" ng-show="questionForm.answerB.$error.required">This is required.</span>
+      <br>
+      <!-- Radio B-->
+      <div ng-show="!ctrl.questions.selectTwo"class="radio-inline">
+        <label><input ng-change="ctrl.selectRad()" ng-model="ctrl.questions.correctAnswer" type="radio" value="B">Option B</label>
+      </div>
+      <!-- Checkbox B-->
+      <div ng-show="ctrl.questions.selectTwo=='Y'" class="checkbox-inline">
+        <label><input ng-change="ctrl.selectTwoLimit('B')" id="B" ng-model="ctrl.questions.correctAnswerB" type="checkbox" ng-true-value="'Y'" ng-false-value="'N'">Option B</label>
+      </div>
+      <!-- Input field -->
+      <span><input style="display: inline-block" required ng-model="ctrl.questions.answerB"  class="form-control input-sm" type="text" name="answerB" value="" tabindex="3"></span><br>
+
+      <!-- Label -->
+      <label for="answerC">Answer C:&nbsp&nbsp</label><span style="color: red" ng-show="questionForm.answerC.$error.required">This is required.</span>
+      <br>
+      <!-- Radio -->
+      <div ng-show="!ctrl.questions.selectTwo"class="radio-inline">
+        <label><input ng-change="ctrl.selectRad()" ng-model="ctrl.questions.correctAnswer" type="radio" value="C">Option C</label>
+      </div>
+      <!-- Checkbox -->
+      <div ng-show="ctrl.questions.selectTwo=='Y'" class="checkbox-inline">
+        <label><input ng-change="ctrl.selectTwoLimit('C')" id="C" ng-model="ctrl.questions.correctAnswerC" type="checkbox" ng-true-value="'Y'" ng-false-value="'N'">Option C</label>
+      </div>
+      <!-- Input field -->
+      <span><input style="display: inline-block" required ng-model="ctrl.questions.answerC"  class="form-control input-sm" type="text" name="answerC" value="" tabindex="4"></span><br>
+
+      <!-- Label -->
+      <label for="answerD">Answer D:&nbsp&nbsp</label><span style="color: red" ng-show="questionForm.answerD.$error.required">This is required.</span>
+      <br>
+      <!-- Radio -->
+      <div ng-show="!ctrl.questions.selectTwo"class="radio-inline">
+        <label><input ng-change="ctrl.selectRad()" ng-model="ctrl.questions.correctAnswer" type="radio" value="D">Option D</label>
+      </div>
+      <!-- Checkbox -->
+      <div ng-show="ctrl.questions.selectTwo=='Y'" class="checkbox-inline">
+        <label><input ng-change="ctrl.selectTwoLimit('D')" id="D" ng-model="ctrl.questions.correctAnswerD" type="checkbox" ng-true-value="'Y'" ng-false-value="'N'">Option D</label>
+      </div>
+      <!-- Input field -->
+      <span><input style="display: inline-block" required ng-model="ctrl.questions.answerD"  class="form-control input-sm" type="text" name="answerD" value="" tabindex="5"></span><br>
+
+      <!-- Label -->
+      <label ng-show="ctrl.questions.selectTwo=='Y'" for="answerE">Answer E:&nbsp&nbsp</label><span style="color: red" ng-show="questionForm.answerE.$error.required">This is required.</span>
+      <br>
+      <!-- Radio -->
+      <!-- No Radio option for choice E -->
+      <!-- Checkbox -->
+      <div ng-show="ctrl.questions.selectTwo=='Y'" class="checkbox-inline">
+        <label><input ng-change="ctrl.selectTwoLimit('E')" id="E" ng-model="ctrl.questions.correctAnswerE" type="checkbox" ng-true-value="'Y'" ng-false-value="'N'">Option E</label>
+      </div>
+      <!-- Input field -->
+      <input style="display: inline-block" ng-required="ctrl.questions.selectTwo=='Y'" ng-show="ctrl.questions.selectTwo=='Y'" ng-model="ctrl.questions.answerE"  class="form-control input-sm" type="text" name="answerE" value="" tabindex="6"><br>
+
+      <!-- Error on correct answer input -->
+      <div style="color: red;float:left;" ng-show="vm.moreMessage">
+        {{ctrl.moreMessage}}
+      </div>
+      <div style="color: red;float:left" ng-show="v,.messageMin">
+        {{ctrl.messageMin}}
+      </div>
+
+      <br>
+      <input ng-click="ctrl.newQuestion()" class="btn btn-success" type="submit" name="Submit" value="Submit">
+    </form>
+  </div>
+</div>

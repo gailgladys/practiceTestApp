@@ -1,0 +1,221 @@
+.container, html, 
+body, .navbar, 
+.navbar-fixed-bottom, .navbar-default {
+  /*animation: shuffle 10s infinite;*/
+  background: #28464B;
+}
+
+.navbar-default {
+  border: 0;
+}
+.centered {
+  text-align: center;
+  padding-top: 5px;
+  font-size: 2rem;
+}
+
+.t {
+  text-align: center;
+  font-size: 8.9rem;
+}
+
+.t, .tt {
+  color: #BC1C29;
+}
+
+.tt {
+  text-align: center;
+  font-size: 7.9rem;
+}
+
+@-webkit-keyframes shuffle {
+  0% {
+    background: #0B132B;
+  }
+  10% {
+    background: #2C8C99;
+  }
+  20% {
+    background: #42D9C8;
+  }
+  30% {
+    background: #1C2541;
+  }
+  40% {
+    background: #2b3965;
+  }
+  50% {
+    background: #1b2e68;
+  }
+  60% {
+    background: #37b0c1;
+  }
+  70% {
+    background: #31d6c3;
+  }
+  80% {
+    background: black;
+  }
+  90% {
+    background: #6a7fbf;
+  }
+  100% {
+    background: #0B132B;
+  }
+}
+@-moz-keyframes shuffle {
+  0% {
+    background: #0B132B;
+  }
+  10% {
+    background: #2C8C99;
+  }
+  20% {
+    background: #42D9C8;
+  }
+  30% {
+    background: #1C2541;
+  }
+  40% {
+    background: #2b3965;
+  }
+  50% {
+    background: #1b2e68;
+  }
+  60% {
+    background: #37b0c1;
+  }
+  70% {
+    background: #31d6c3;
+  }
+  80% {
+    background: black;
+  }
+  90% {
+    background: #6a7fbf;
+  }
+  100% {
+    background: #0B132B;
+  }
+}
+@-ms-keyframes shuffle {
+  0% {
+    background: #0B132B;
+  }
+  10% {
+    background: #2C8C99;
+  }
+  20% {
+    background: #42D9C8;
+  }
+  30% {
+    background: #1C2541;
+  }
+  40% {
+    background: #2b3965;
+  }
+  50% {
+    background: #1b2e68;
+  }
+  60% {
+    background: #37b0c1;
+  }
+  70% {
+    background: #31d6c3;
+  }
+  80% {
+    background: black;
+  }
+  90% {
+    background: #6a7fbf;
+  }
+  100% {
+    background: #0B132B;
+  }
+}
+@-o-keyframes shuffle {
+  0% {
+    background: #0B132B;
+  }
+  10% {
+    background: #2C8C99;
+  }
+  20% {
+    background: #42D9C8;
+  }
+  30% {
+    background: #1C2541;
+  }
+  40% {
+    background: #2b3965;
+  }
+  50% {
+    background: #1b2e68;
+  }
+  60% {
+    background: #37b0c1;
+  }
+  70% {
+    background: #31d6c3;
+  }
+  80% {
+    background: black;
+  }
+  90% {
+    background: #6a7fbf;
+  }
+  100% {
+    background: #0B132B;
+  }
+}
+@keyframes shuffle {
+  0% {
+    background: #0B132B;
+  }
+  10% {
+    background: #2C8C99;
+  }
+  20% {
+    background: #42D9C8;
+  }
+  30% {
+    background: #1C2541;
+  }
+  40% {
+    background: #2b3965;
+  }
+  50% {
+    background: #1b2e68;
+  }
+  60% {
+    background: #37b0c1;
+  }
+  70% {
+    background: #31d6c3;
+  }
+  80% {
+    background: black;
+  }
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+body {
+  /* Margin bottom by footer height */
+  margin-bottom: 60px;
+}
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  /* Set the fixed height of the footer here */
+  height: 60px;
+}
+  90% {
+    background: #6a7fbf;
+  }
+  100% {
+    background: #0B132B;
+  }
+}

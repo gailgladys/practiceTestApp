@@ -1,0 +1,56 @@
+<br><br><br>
+<div class="center">
+  <h1>Test Bank Page</h1>
+  <form ng-submit="vm.selectExamNum()" class="">
+    <label for="examNum">Which exam number do you wish to display?</label>
+    <input autofocus ng-keyup="$event.keyCode == 13 && vm.selectExamNum()"ng-model="vm.examNum" type="number" min="1" max="99" name="examNum" value="">
+  </form>
+  <h2>{{vm.message}}</h2>
+</div>
+<div class="container">
+  <div ng-show="vm.questions" class="testBank">
+    <h2 class="center">Exam {{vm.displayExamNum}}</h2>
+    <h2 class="center">{{vm.examName}}</h2>
+    <div class="row" ng-repeat="question in vm.questions">
+      <div class="col-xs-8 col-xs-offset-2">
+        <h3>Question # {{$index+1}}</h3>
+        <p>
+          Question: {{question.question}}
+        </p>
+        <div ng-hide="question.selectTwo=='Y'">
+          <h3>Correct Answer {{question.correctAnswer}}</h3>
+          <p><span ng-show="question.correctAnswer[0] != 'A'" class="glyphicon glyphicon-remove-sign red"></span><span ng-show="question.correctAnswer[0] == 'A'" class="glyphicon glyphicon-ok-sign green"></span>A)
+            {{question.answerA}}
+          </p>
+          <p><span ng-show="question.correctAnswer[0] != 'B'" class="glyphicon glyphicon-remove-sign red"></span><span ng-show="question.correctAnswer[0] == 'B'" class="glyphicon glyphicon-ok-sign green"></span>B)
+            {{question.answerB}}
+          </p>
+          <p><span ng-show="question.correctAnswer[0] != 'C'" class="glyphicon glyphicon-remove-sign red"></span><span ng-show="question.correctAnswer[0] == 'C'" class="glyphicon glyphicon-ok-sign green"></span>C)
+            {{question.answerC}}
+          </p>
+          <p><span ng-show="question.correctAnswer[0] != 'D'" class="glyphicon glyphicon-remove-sign red"></span><span ng-show="question.correctAnswer[0] == 'D'" class="glyphicon glyphicon-ok-sign green"></span>D)
+            {{question.answerD}}
+          </p>
+        </div>
+        <div ng-show="question.selectTwo=='Y'">
+          <h3>Correct Answer {{question.correctAnswer}}</h3>
+          <p><span ng-show="question.correctAnswer[0] != 'A' && question.correctAnswer[1] != 'A'" class="glyphicon glyphicon-remove-sign red"></span><span ng-show="question.correctAnswer[0] == 'A' || question.correctAnswer[1] == 'A'" class="glyphicon glyphicon-ok-sign green"></span>A)
+            {{question.answerA}}
+          </p>
+          <p><span ng-show="question.correctAnswer[0] != 'B' && question.correctAnswer[1] != 'B'" class="glyphicon glyphicon-remove-sign red"></span><span ng-show="question.correctAnswer[0] == 'B' || question.correctAnswer[1] == 'B'" class="glyphicon glyphicon-ok-sign green"></span>B)
+            {{question.answerB}}
+          </p>
+          <p><span ng-show="question.correctAnswer[0] != 'C' && question.correctAnswer[1] != 'C'" class="glyphicon glyphicon-remove-sign red"></span><span ng-show="question.correctAnswer[0] == 'C' || question.correctAnswer[1] == 'C'" class="glyphicon glyphicon-ok-sign green"></span>C)
+            {{question.answerC}}
+          </p>
+          <p><span ng-show="question.correctAnswer[0] != 'D' && question.correctAnswer[1] != 'D'" class="glyphicon glyphicon-remove-sign red"></span><span ng-show="question.correctAnswer[0] == 'D' || question.correctAnswer[1] == 'D'" class="glyphicon glyphicon-ok-sign green"></span>D)
+            {{question.answerD}}
+          </p>
+          <p><span ng-show="question.correctAnswer[0] != 'E' && question.correctAnswer[1] != 'E'" class="glyphicon glyphicon-remove-sign red"></span><span ng-show="question.correctAnswer[0] == 'E' || question.correctAnswer[1] == 'E'" class="glyphicon glyphicon-ok-sign green"></span>E)
+            {{question.answerE}}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

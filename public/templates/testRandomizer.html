@@ -1,0 +1,57 @@
+<br><br><br>
+<div class="center">
+  <h1>Test Randomizer Page</h1>
+  <form ng-submit="vm.selectExamNum()" class="">
+    <label for="examNum">Which exam number do you wish to randomize?</label>
+    <input ng-model="vm.examNum" type="number" min="1" max="99" name="examNum" value="">
+    <br>
+    <input class="btn btn-success" type="submit" name="submit" value="Submit">
+  </form>
+  <h2>{{vm.message}}</h2>
+</div>
+<div class="container">
+  <div ng-show="vm.exams" class="testBank" ng-repeat="exam in vm.exams">
+    <h1>Sub Exam {{$index+1}}</h1>
+    <div ng-repeat="question in exam" class="row">
+      <div class="col-xs-8 col-xs-offset-2">
+        <h3>Question # {{$index+1}}</h3>
+        <p>
+          Question: {{question.question}}
+        </p>
+        <div ng-hide="question.selectTwo=='Y'">
+          <h3>Correct Answer {{question.correctAnswer}}</h3>
+          <p><span ng-show="question.correctAnswer[0] != 'A'" class="glyphicon glyphicon-remove-sign red"></span><span ng-show="question.correctAnswer[0] == 'A'" class="glyphicon glyphicon-ok-sign green"></span>A)
+            {{question.answerA}}
+          </p>
+          <p><span ng-show="question.correctAnswer[0] != 'B'" class="glyphicon glyphicon-remove-sign red"></span><span ng-show="question.correctAnswer[0] == 'B'" class="glyphicon glyphicon-ok-sign green"></span>B)
+            {{question.answerB}}
+          </p>
+          <p><span ng-show="question.correctAnswer[0] != 'C'" class="glyphicon glyphicon-remove-sign red"></span><span ng-show="question.correctAnswer[0] == 'C'" class="glyphicon glyphicon-ok-sign green"></span>C)
+            {{question.answerC}}
+          </p>
+          <p><span ng-show="question.correctAnswer[0] != 'D'" class="glyphicon glyphicon-remove-sign red"></span><span ng-show="question.correctAnswer[0] == 'D'" class="glyphicon glyphicon-ok-sign green"></span>D)
+            {{question.answerD}}
+          </p>
+        </div>
+        <div ng-show="question.selectTwo=='Y'">
+          <h3>Correct Answer {{question.correctAnswer}}</h3>
+          <p><span ng-show="question.correctAnswer[0] != 'A' && question.correctAnswer[1] != 'A'" class="glyphicon glyphicon-remove-sign red"></span><span ng-show="question.correctAnswer[0] == 'A' || question.correctAnswer[1] == 'A'" class="glyphicon glyphicon-ok-sign green"></span>A)
+            {{question.answerA}}
+          </p>
+          <p><span ng-show="question.correctAnswer[0] != 'B' && question.correctAnswer[1] != 'B'" class="glyphicon glyphicon-remove-sign red"></span><span ng-show="question.correctAnswer[0] == 'B' || question.correctAnswer[1] == 'B'" class="glyphicon glyphicon-ok-sign green"></span>B)
+            {{question.answerB}}
+          </p>
+          <p><span ng-show="question.correctAnswer[0] != 'C' && question.correctAnswer[1] != 'C'" class="glyphicon glyphicon-remove-sign red"></span><span ng-show="question.correctAnswer[0] == 'C' || question.correctAnswer[1] == 'C'" class="glyphicon glyphicon-ok-sign green"></span>C)
+            {{question.answerC}}
+          </p>
+          <p><span ng-show="question.correctAnswer[0] != 'D' && question.correctAnswer[1] != 'D'" class="glyphicon glyphicon-remove-sign red"></span><span ng-show="question.correctAnswer[0] == 'D' || question.correctAnswer[1] == 'D'" class="glyphicon glyphicon-ok-sign green"></span>D)
+            {{question.answerD}}
+          </p>
+          <p><span ng-show="question.correctAnswer[0] != 'E' && question.correctAnswer[1] != 'E'" class="glyphicon glyphicon-remove-sign red"></span><span ng-show="question.correctAnswer[0] == 'E' || question.correctAnswer[1] == 'E'" class="glyphicon glyphicon-ok-sign green"></span>E)
+            {{question.answerE}}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
