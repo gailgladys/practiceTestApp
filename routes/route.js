@@ -33,8 +33,8 @@ router.get('/testBank', function (req, res, next) {
     }
 });
 router.get('/examsAvailable', function (req, res) {
-    Exam.find({}, function (err, examsAvailable) {
-        res.json(examsAvailable);
+    Exam.find({}, function (err, exams) {
+        res.json(exams);
     });
 });
 router.get('/examBank', function (req, res, next) {
@@ -52,6 +52,8 @@ router.get('/adminExamAssign', function (req, res) {
     console.log('Hi there - this should show up: hitting adminExamAssign route');
     var examNum = req.param('examNum');
     console.log("examNum: " + examNum);
+    var examName = req.param('examName');
+    console.log("examName: " + examName);
     var studentStr = req.param('student');
     console.log("studentStr: " + studentStr);
     var student = JSON.parse(studentStr);
@@ -92,6 +94,7 @@ router.get('/adminExamAssign', function (req, res) {
                 console.log("student: " + student);
                 console.log("student_id: " + student._id);
                 console.log("examNum: " + examNum);
+                console.log("examName: " + examName);
                 console.log("student.status: " + student.status);
                 if (student.practiceTests) {
                     student.practiceTests[examNum] = examObj;
@@ -101,12 +104,20 @@ router.get('/adminExamAssign', function (req, res) {
                     student.practiceTests[examNum] = examObj;
                 }
                 console.log("student.practiceTests[examNum]: " + student.practiceTests[examNum]);
+                if (student.examNames) {
+                    student.examNames[examNum] = examName;
+                }
+                else {
+                    student['examNames'] = {};
+                    student.examNames[examNum] = examName;
+                }
+                console.log("student.examNames[examNum]: " + student.examNames[examNum]);
                 if (student.examsAvailable.indexOf(examNum) == -1) {
                     student.examsAvailable.push(examNum);
                     console.log("student.examsAvailable: " + student.examsAvailable);
                 }
                 console.log("student(modified): " + student);
-                User.update({ '_id': student._id }, { 'practiceTests': student.practiceTests, 'examsAvailable': student.examsAvailable }, function (err, resp) {
+                User.update({ '_id': student._id }, { 'practiceTests': student.practiceTests, 'examsAvailable': student.examsAvailable, 'examNames': student.examNames }, function (err, resp) {
                     if (err)
                         return err;
                     console.log('edited practiceTest');

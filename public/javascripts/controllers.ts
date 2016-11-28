@@ -340,6 +340,9 @@ export class QuestionFormController {
       public studentAnswerE;
       public moreMessage;
       public messageMin;
+      public examSelect;
+      public examNameSelect;
+      public subexamSelect;
 
       pageChanged(){
         this.log.log('Page changed to: '+ this.currentPage);
@@ -367,6 +370,9 @@ export class QuestionFormController {
 
       selectExam(exam,subexam){
         console.log('Exam: ',exam,' Subexam: ',subexam);
+        this.examSelect = exam;
+        this.subexamSelect = subexam;
+        this.examNameSelect = this.student.examNames[exam];
         let self = this;
         this.http.get('/examBank', {params: {questArray: this.student.practiceTests[exam][subexam]}}).then((response) => {
           console.log('response.data:');
@@ -486,7 +492,7 @@ export class QuestionFormController {
         }
       }
 
-      submitExam(){
+      submitExam(out){
         console.log('exam submitted');
         let self = this;
         let unansweredArray = [];
@@ -497,7 +503,7 @@ export class QuestionFormController {
         for(let i=0;i<this.questions.length;i++){
           if(this.answers[i]){
             console.log(this.answers[i]);
-            if(this.questions[i].selectTwo=="N"){
+            if(this.questions[i].selectTwo != "Y"){
               if(this.questions[i].correctAnswer[0]==this.answers[i][0]){
                 console.log(`You got question #${i+1} right!`)
                 gradeArray[i]="Right";
@@ -515,12 +521,13 @@ export class QuestionFormController {
               }
             }
           } else {
+            gradeArray[i]="Unanswered - Wrong"
             unansweredArray.push(i+1);
           }
         }
-        if(unansweredArray.length>0){
-          self.message2=`You didn't answer the following questions: ${unansweredArray}`;
-          let yn = confirm('Are you sure you want to submit?');
+        if(unansweredArray.length>0 && out!='outoftime'){
+
+          let yn = confirm('You have not answered all the questions. Are you sure you want to submit?');
           if (yn==true){
             gradeExam();
           } else {
@@ -533,7 +540,11 @@ export class QuestionFormController {
         function gradeExam(){
           console.log('gradeExam() called');
           console.log(`gradeArray: ${gradeArray}`);
-          self.message2 = "You answered all the questions. Grading commencing....";
+          if(unansweredArray.length>0){
+            self.message2=`You didn't answer the following questions: ${unansweredArray}. Grading commencing....`;
+          } else {
+            self.message2 = "You answered all the questions. Grading commencing....";
+          }
           let string = "";
           let numRight = 0;
           console.log(submitExamQuest.length);
@@ -546,7 +557,7 @@ export class QuestionFormController {
           self.submitted = true;
           let finalGrade = Math.round(numRight/submitExamQuest.length*100);
           console.log(finalGrade);
-          self.message4 = `Your final grade is ${finalGrade}%`;
+          self.message4 = `Your grade is ${finalGrade}%`;
           console.log(string);
           self.message3 = string;
         }
@@ -559,6 +570,7 @@ export class QuestionFormController {
           console.log(response.data);
           this.student = response.data;
           this.examsAvailable = this.student.examsAvailable;
+          this.message = "";
         });
         this.message = "";
         this.moreMessage = "";
@@ -589,7 +601,8 @@ export class QuestionFormController {
       assignExam(student,examNum,index) {
         console.log(`index: ${index}`);
         console.log(`this.students[index]: ${this.students[index]}`);
-        this.http.get('/adminExamAssign', {params: {examNum: examNum, student: student}}).then((response) => {
+        let examName = this.examsAvailable[0].examNames[examNum];
+        this.http.get('/adminExamAssign', {params: {examNum: examNum, examName: examName, student: student}}).then((response) => {
           this.message = 'success';
           console.log(`response.data: ${response.data}`);
           console.log(`JSON.stringify(response.data): ${JSON.stringify(response.data)}`);

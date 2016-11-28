@@ -4,16 +4,13 @@
   <div class="practiceTest">
     <div class="row">
       <div class="col-xs-9 col-xs-offset-1">
-        <!-- <button type="button" ng-click="vm.reset()" name="button">Reset vm.message</button>
-        {{vm.test}} -->
-        {{vm.message}}
         <div ng-hide="vm.message == 'Good Luck!'">
-          <div class="row" ng-repeat="exam in vm.examsAvailable">
-            <div class="col-xs-3">
-              <h1>{{exam}}</h1>
-              <div class="row" ng-repeat="(key,value) in vm.student.practiceTests[exam]">
-                <div class="col-xs-3">
-                  <button ng-click="vm.selectExam(exam,key)" class="btn btn-success" type="button" name="button">{{key}}</button>
+          <div class="row">
+            <div class="col-xs-3" ng-repeat="exam in vm.examsAvailable">
+              <h2 class="center">{{exam}} {{vm.student.examNames[exam]}}</h2>
+              <div class="row">
+                <div style="margin-bottom: 8px;" class="col-xs-3" ng-repeat="(key,value) in vm.student.practiceTests[exam]">
+                  <button ng-click="vm.selectExam(exam,key)" style="min-width: 44px;" class="btn btn-success" type="button" name="button">{{key}}</button>
                 </div>
               </div>
             </div>
@@ -23,7 +20,7 @@
     </div>
     <div ng-hide="vm.submitted" ng-show="vm.message == 'Good Luck!'" class="row">
       <h2 style="text-align:center;">{{vm.message}}</h2>
-      <timer ng-if="vm.message == 'Good Luck!'" finish-callback="vm.countdownZero()" countdown="1800" interval="1000">{{minutes}} minute{{minutesS}}, {{seconds}} second{{secondsS}}.</timer>
+      <timer ng-if="vm.message == 'Good Luck!'" finish-callback="vm.submitExam('outoftime')" countdown="10" interval="1000">{{minutes}} minute{{minutesS}}, {{seconds}} second{{secondsS}}.</timer>
       <div class="col-xs-3">
         <div class="row">
           <div ng-repeat="question in vm.questions" style="margin-top: 5px;" class="col-xs-6">
@@ -34,7 +31,7 @@
           </div>
         </div>
       </div>
-      <div class="col-xs-9">
+      <div ng-show="vm.message == 'Good Luck!'" class="col-xs-9">
         <div class="row">
           <div class="col-xs-12">
             <h3>Question # {{vm.currentPage}}</h3>
@@ -105,19 +102,20 @@
 
     </div>
     <br><br>
-    <div ng-show="vm.message == 'Good Luck!'" class="row">
+    <div ng-hide="vm.submitted" ng-show="vm.message == 'Good Luck!'" class="row">
       <div class="col-xs-8 col-xs-offset-2">
-        <input ng-click="vm.submitExam()" type="button" class="btn btn-primary" name="Submit" value="Submit Exam">
-        <h3>{{vm.message2}}</h3>
-        <br>
-        <h4>{{vm.message3}}</h4>
-        <h4>{{vm.message4}}</h4>
+        <input ng-show="vm.message == 'Good Luck!'" ng-click="vm.submitExam()" type="button" class="btn btn-primary" name="Submit" value="Submit Exam">
       </div>
     </div>
     <div ng-show="vm.submitted">
-      <h1>Submitted</h1>
-      <h2 class="center">Exam {{vm.displayExamNum}}</h2>
-      <h2 class="center">{{vm.examName}}</h2>
+      <h1 class="center">{{vm.examNameSelect}}</h1>
+      <h1 class="center">Exam {{vm.examSelect}}/Subexam {{vm.subexamSelect}}</h1>
+      <h4>{{vm.message2}}</h4>
+      <br>
+      <h4>{{vm.message3}}</h4>
+      <br>
+      <h2>{{vm.message4}}</h2>
+      <br>
       <div class="row" ng-repeat="question in vm.questions">
         <div class="col-xs-8 col-xs-offset-2">
           <h3 style="margin-left: -50px;font-weight:bold;"><span ng-show="vm.answers[$index][0] == question.correctAnswer[0] && question.selectTwo != 'Y'" class="glyphicon glyphicon-ok-sign green"></span><span ng-show="vm.answers[$index][0] == question.correctAnswer[0] && vm.answers[$index][1] == question.correctAnswer[1] && question.selectTwo == 'Y'" class="glyphicon glyphicon-ok-sign green"></span><span ng-show="vm.answers[$index][0] != question.correctAnswer[0] && question.selectTwo != 'Y'" class="glyphicon glyphicon-remove-sign red"></span><span ng-show="(vm.answers[$index][0] != question.correctAnswer[0] || vm.answers[$index][1] != question.correctAnswer[1]) && question.selectTwo == 'Y'" class="glyphicon glyphicon-remove-sign red"></span>Question # {{$index+1}}</h3>

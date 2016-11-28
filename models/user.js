@@ -1,6 +1,6 @@
 "use strict";
-var mongoose = require('mongoose');
-var crypto = require('crypto');
+var mongoose = require("mongoose");
+var crypto = require("crypto");
 var jwt = require("jsonwebtoken");
 var UserSchema = new mongoose.Schema({
     username: { type: String, unique: true },
@@ -9,6 +9,7 @@ var UserSchema = new mongoose.Schema({
     practiceTests: Object,
     grades: Object,
     examsAvailable: Array,
+    examNames: Object,
     passwordHash: String,
     salt: String,
     created_at: Date

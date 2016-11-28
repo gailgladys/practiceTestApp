@@ -285,6 +285,7 @@ var MyApp;
                     console.log(response.data);
                     _this.student = response.data;
                     _this.examsAvailable = _this.student.examsAvailable;
+                    _this.message = "";
                 });
                 this.message = "";
                 this.moreMessage = "";
@@ -324,6 +325,9 @@ var MyApp;
             PracticeTestController.prototype.selectExam = function (exam, subexam) {
                 var _this = this;
                 console.log('Exam: ', exam, ' Subexam: ', subexam);
+                this.examSelect = exam;
+                this.subexamSelect = subexam;
+                this.examNameSelect = this.student.examNames[exam];
                 var self = this;
                 this.http.get('/examBank', { params: { questArray: this.student.practiceTests[exam][subexam] } }).then(function (response) {
                     console.log('response.data:');
@@ -443,7 +447,7 @@ var MyApp;
                     this.messageMin = "You need to select an answer!";
                 }
             };
-            PracticeTestController.prototype.submitExam = function () {
+            PracticeTestController.prototype.submitExam = function (out) {
                 console.log('exam submitted');
                 var self = this;
                 var unansweredArray = [];
@@ -454,7 +458,7 @@ var MyApp;
                 for (var i = 0; i < this.questions.length; i++) {
                     if (this.answers[i]) {
                         console.log(this.answers[i]);
-                        if (this.questions[i].selectTwo == "N") {
+                        if (this.questions[i].selectTwo != "Y") {
                             if (this.questions[i].correctAnswer[0] == this.answers[i][0]) {
                                 console.log("You got question #" + (i + 1) + " right!");
                                 gradeArray[i] = "Right";
@@ -476,12 +480,12 @@ var MyApp;
                         }
                     }
                     else {
+                        gradeArray[i] = "Unanswered - Wrong";
                         unansweredArray.push(i + 1);
                     }
                 }
-                if (unansweredArray.length > 0) {
-                    self.message2 = "You didn't answer the following questions: " + unansweredArray;
-                    var yn = confirm('Are you sure you want to submit?');
+                if (unansweredArray.length > 0 && out != 'outoftime') {
+                    var yn = confirm('You have not answered all the questions. Are you sure you want to submit?');
                     if (yn == true) {
                         gradeExam();
                     }
@@ -495,7 +499,12 @@ var MyApp;
                 function gradeExam() {
                     console.log('gradeExam() called');
                     console.log("gradeArray: " + gradeArray);
-                    self.message2 = "You answered all the questions. Grading commencing....";
+                    if (unansweredArray.length > 0) {
+                        self.message2 = "You didn't answer the following questions: " + unansweredArray + ". Grading commencing....";
+                    }
+                    else {
+                        self.message2 = "You answered all the questions. Grading commencing....";
+                    }
                     var string = "";
                     var numRight = 0;
                     console.log(submitExamQuest.length);
@@ -508,7 +517,7 @@ var MyApp;
                     self.submitted = true;
                     var finalGrade = Math.round(numRight / submitExamQuest.length * 100);
                     console.log(finalGrade);
-                    self.message4 = "Your final grade is " + finalGrade + "%";
+                    self.message4 = "Your grade is " + finalGrade + "%";
                     console.log(string);
                     self.message3 = string;
                 }
@@ -535,7 +544,8 @@ var MyApp;
                 var _this = this;
                 console.log("index: " + index);
                 console.log("this.students[index]: " + this.students[index]);
-                this.http.get('/adminExamAssign', { params: { examNum: examNum, student: student } }).then(function (response) {
+                var examName = this.examsAvailable[0].examNames[examNum];
+                this.http.get('/adminExamAssign', { params: { examNum: examNum, examName: examName, student: student } }).then(function (response) {
                     _this.message = 'success';
                     console.log("response.data: " + response.data);
                     console.log("JSON.stringify(response.data): " + JSON.stringify(response.data));

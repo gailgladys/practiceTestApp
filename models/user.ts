@@ -26,6 +26,7 @@ let UserSchema = new mongoose.Schema({
   practiceTests: Object,
   grades: Object,
   examsAvailable: Array,
+  examNames: Object,
   passwordHash: String,
   salt: String,
   created_at: Date
