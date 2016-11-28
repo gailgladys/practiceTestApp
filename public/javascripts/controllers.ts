@@ -481,10 +481,12 @@ export class QuestionFormController {
       }
 
       submitExam(out){
+        this.$scope.$broadcast('timer-stop');
+        // this.$scope.$apply();
         console.log('exam submitted');
-        this.submitted = true;
+        // this.submitted = true;
         let self = this;
-        self.submitted = true;
+        // self.submitted = true;
         let unansweredArray = [];
         let gradeArray = [];
         let submitExamQuest = this.questions;
@@ -517,11 +519,13 @@ export class QuestionFormController {
         }
         if(unansweredArray.length>0 && out!='outoftime'){
           let yn = confirm('You have not answered all the questions. Are you sure you want to submit?');
+          console.log(`yn: ${yn}`);
           if (yn==true){
+            console.log(`yn - should be true: ${yn}`);
             gradeExam();
           } else {
-            self.submitted = false;
-            return;
+            console.log(`yn - should be false: ${yn}`);
+            self.$scope.$broadcast('timer-start');
           }
         } else {
           gradeExam();
@@ -549,8 +553,11 @@ export class QuestionFormController {
           self.message4 = `Your grade is ${finalGrade}%`;
           console.log(string);
           self.message3 = string;
-          self.message5 = "You ran out of time!";
-          self.$scope.$apply();
+          if(out=="outoftime"){
+            self.message5 = "You ran out of time!";
+            self.$scope.$apply();
+          }
+
         }
       }
 
@@ -566,6 +573,7 @@ export class QuestionFormController {
         this.message = "";
         this.moreMessage = "";
         this.messageMin = "";
+        this.message5 = "";
         this.http = $http;
         this.currentPage = 1;
         this.log = $log;
