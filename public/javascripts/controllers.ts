@@ -728,107 +728,6 @@ export class QuestionFormController {
   angular.module("MyApp").controller('TestController', TestController);
 
 
-  export class jobPostController {
-        public jobPosts;
-        public jobPost;
-        public message;
-        public http;
-        public totalItems;
-        public currentPage;
-        public log;
-        public itemsPerPage;
-        public newForm;
-        public editForm;
-
-        pageChanged(){
-          this.log.log('Page changed to: '+ this.currentPage);
-        }
-
-        edit(id){
-          this.newForm = false;
-          this.editForm = true;
-
-        }
-
-        newJobPost(){
-          console.log(this.http);
-          console.log(this.jobPosts);
-
-          let self = this.jobPosts;
-          this.totalItems++;
-          this.message = "Submited";
-          let title = this.jobPost.title;
-          let location = this.jobPost.location;
-          let description = this.jobPost.description;
-          console.log(`Title: ${title}`);
-          console.log(`Location: ${location}`);
-          console.log(`Description: ${description}`);
-          let data = {
-               jobTitle: title,
-               jobLocation: location,
-               jobDescription: description,
-               created_at: new Date()
-              }
-          console.log(data);
-          this.jobPost = {};
-          this.http.post("/jobPost", data).success(function(data, status) {
-              console.log(data);
-              self.unshift(data);
-              console.log(self);
-          });
-
-        }
-
-        constructor($http: ng.IHttpService,$log){
-            this.message = "Job Post Page";
-            this.http = $http;
-            this.log = $log;
-            this.currentPage = 1;
-            this.itemsPerPage = 2;
-            this.editForm = false;
-            this.newForm = true;
-
-            $http.get('/jobPostData').then((response) => {
-
-                this.jobPosts = response.data;
-                this.totalItems = this.jobPosts.length;
-            });
-
-        }
-    }
-
-    angular.module("MyApp").controller('jobPostController', jobPostController);
-
-
-    export class ActiveController {
-
-      }
-
-      angular.module("MyApp").controller('ActiveController', ActiveController);
-
-    export class StudDisplayController {
-        public studForm;
-        public status;
-        public students;
-
-        constructor($http: ng.IHttpService, $state,$stateParams){
-          this.studForm = false;
-          this.status = $stateParams.status;
-          $http.get('/studentData').then((response) => {
-              this.students = response.data;
-          });
-        }
-      }
-
-      angular.module("MyApp").controller('StudDisplayController', StudDisplayController);
-
-
-    export class RecentController {
-
-        }
-
-        angular.module("MyApp").controller('RecentController', RecentController);
-
     export class TestDisplayController {
 
       public status;
@@ -841,64 +740,6 @@ export class QuestionFormController {
 
     angular.module("MyApp").controller('TestDisplayController', TestDisplayController);
 
-
-
-    export class AboutBadgesController {
-
-      public badges;
-
-      constructor($http: ng.IHttpService){
-          $http.get('/badgesData').then((response) => {
-              this.badges = response.data;
-          });
-      }
-
-    }
-
-      angular.module("MyApp").controller('AboutBadgesController', AboutBadgesController);
-
-    export class StudController {
-
-        public badges;
-
-        constructor($http: ng.IHttpService){
-            $http.get('/badgesData').then((response) => {
-                this.badges = response.data;
-            });
-        }
-
-      }
-
-        angular.module("MyApp").controller('StudController', StudController);
-
-    export class ContactController {
-
-      }
-
-      angular.module("MyApp").controller('ContactController', ContactController);
-
-    export class ShowController {
-
-        }
-
-        angular.module("MyApp").controller('ShowController', ShowController);
-
-    export class employerViewController {
-      public badges;
-      public student;
-
-      constructor($http: ng.IHttpService,$state,$stateParams){
-          $http.get('/badgesData').then((response) => {
-              this.badges = response.data;
-          });
-          $http.get('/studentShowData',{params: {id: $stateParams.id}}).then((response) => {
-            console.log(response.data);
-            this.student = response.data;
-          });
-      }
-    }
-
-    angular.module("MyApp").controller('employerViewController', employerViewController);
 
     export class LoginController {
 
@@ -943,19 +784,6 @@ export class QuestionFormController {
     }
 
     angular.module('MyApp').controller('LoginController', LoginController);
-
-    export class FoodController {
-      badges: {};
-      search: string;
-
-      constructor($http: ng.IHttpService) {
-        $http.get('/badgesData').then((response) => {
-            this.badges = response.data;
-        });
-      }
-    }
-      angular.module("MyApp").controller('FoodController', FoodController);
-
 
       export class RegistrationController {
           public message;

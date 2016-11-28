@@ -634,85 +634,6 @@ var MyApp;
         }());
         Controllers.TestController = TestController;
         angular.module("MyApp").controller('TestController', TestController);
-        var jobPostController = (function () {
-            function jobPostController($http, $log) {
-                var _this = this;
-                this.message = "Job Post Page";
-                this.http = $http;
-                this.log = $log;
-                this.currentPage = 1;
-                this.itemsPerPage = 2;
-                this.editForm = false;
-                this.newForm = true;
-                $http.get('/jobPostData').then(function (response) {
-                    _this.jobPosts = response.data;
-                    _this.totalItems = _this.jobPosts.length;
-                });
-            }
-            jobPostController.prototype.pageChanged = function () {
-                this.log.log('Page changed to: ' + this.currentPage);
-            };
-            jobPostController.prototype.edit = function (id) {
-                this.newForm = false;
-                this.editForm = true;
-            };
-            jobPostController.prototype.newJobPost = function () {
-                console.log(this.http);
-                console.log(this.jobPosts);
-                var self = this.jobPosts;
-                this.totalItems++;
-                this.message = "Submited";
-                var title = this.jobPost.title;
-                var location = this.jobPost.location;
-                var description = this.jobPost.description;
-                console.log("Title: " + title);
-                console.log("Location: " + location);
-                console.log("Description: " + description);
-                var data = {
-                    jobTitle: title,
-                    jobLocation: location,
-                    jobDescription: description,
-                    created_at: new Date()
-                };
-                console.log(data);
-                this.jobPost = {};
-                this.http.post("/jobPost", data).success(function (data, status) {
-                    console.log(data);
-                    self.unshift(data);
-                    console.log(self);
-                });
-            };
-            return jobPostController;
-        }());
-        Controllers.jobPostController = jobPostController;
-        angular.module("MyApp").controller('jobPostController', jobPostController);
-        var ActiveController = (function () {
-            function ActiveController() {
-            }
-            return ActiveController;
-        }());
-        Controllers.ActiveController = ActiveController;
-        angular.module("MyApp").controller('ActiveController', ActiveController);
-        var StudDisplayController = (function () {
-            function StudDisplayController($http, $state, $stateParams) {
-                var _this = this;
-                this.studForm = false;
-                this.status = $stateParams.status;
-                $http.get('/studentData').then(function (response) {
-                    _this.students = response.data;
-                });
-            }
-            return StudDisplayController;
-        }());
-        Controllers.StudDisplayController = StudDisplayController;
-        angular.module("MyApp").controller('StudDisplayController', StudDisplayController);
-        var RecentController = (function () {
-            function RecentController() {
-            }
-            return RecentController;
-        }());
-        Controllers.RecentController = RecentController;
-        angular.module("MyApp").controller('RecentController', RecentController);
         var TestDisplayController = (function () {
             function TestDisplayController($state, $stateParams) {
                 this.status = $stateParams.status;
@@ -721,57 +642,6 @@ var MyApp;
         }());
         Controllers.TestDisplayController = TestDisplayController;
         angular.module("MyApp").controller('TestDisplayController', TestDisplayController);
-        var AboutBadgesController = (function () {
-            function AboutBadgesController($http) {
-                var _this = this;
-                $http.get('/badgesData').then(function (response) {
-                    _this.badges = response.data;
-                });
-            }
-            return AboutBadgesController;
-        }());
-        Controllers.AboutBadgesController = AboutBadgesController;
-        angular.module("MyApp").controller('AboutBadgesController', AboutBadgesController);
-        var StudController = (function () {
-            function StudController($http) {
-                var _this = this;
-                $http.get('/badgesData').then(function (response) {
-                    _this.badges = response.data;
-                });
-            }
-            return StudController;
-        }());
-        Controllers.StudController = StudController;
-        angular.module("MyApp").controller('StudController', StudController);
-        var ContactController = (function () {
-            function ContactController() {
-            }
-            return ContactController;
-        }());
-        Controllers.ContactController = ContactController;
-        angular.module("MyApp").controller('ContactController', ContactController);
-        var ShowController = (function () {
-            function ShowController() {
-            }
-            return ShowController;
-        }());
-        Controllers.ShowController = ShowController;
-        angular.module("MyApp").controller('ShowController', ShowController);
-        var employerViewController = (function () {
-            function employerViewController($http, $state, $stateParams) {
-                var _this = this;
-                $http.get('/badgesData').then(function (response) {
-                    _this.badges = response.data;
-                });
-                $http.get('/studentShowData', { params: { id: $stateParams.id } }).then(function (response) {
-                    console.log(response.data);
-                    _this.student = response.data;
-                });
-            }
-            return employerViewController;
-        }());
-        Controllers.employerViewController = employerViewController;
-        angular.module("MyApp").controller('employerViewController', employerViewController);
         var LoginController = (function () {
             function LoginController($uibModalInstance, accountService, $http) {
                 this.$uibModalInstance = $uibModalInstance;
@@ -801,17 +671,6 @@ var MyApp;
         }());
         Controllers.LoginController = LoginController;
         angular.module('MyApp').controller('LoginController', LoginController);
-        var FoodController = (function () {
-            function FoodController($http) {
-                var _this = this;
-                $http.get('/badgesData').then(function (response) {
-                    _this.badges = response.data;
-                });
-            }
-            return FoodController;
-        }());
-        Controllers.FoodController = FoodController;
-        angular.module("MyApp").controller('FoodController', FoodController);
         var RegistrationController = (function () {
             function RegistrationController($http, accountService, $state) {
                 this.http = $http;
