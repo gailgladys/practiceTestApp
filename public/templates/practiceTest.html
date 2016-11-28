@@ -39,50 +39,50 @@
           <div class="col-xs-12">
             <h3>Question # {{vm.currentPage}}</h3>
             <p>
-              Question: {{vm.questions[vm.currentPage].question}}
+              Question: {{vm.questions[vm.currentPage-1].question}}
             </p>
             <!-- For standard questions -->
-            <form ng-hide="vm.questions[vm.currentPage].selectTwo=='Y'">
+            <form ng-hide="vm.questions[vm.currentPage-1].selectTwo=='Y'">
               <label for="radio">Select the One Best Answer: </label><br>
               <div class="radio-inline" style="float:none;">
-                <label><input ng-change="vm.enterAnswer1(vm.currentPage-1)" ng-model="vm.studentAnswer[vm.currentPage-1]" type="radio" value="A">A) {{vm.questions[vm.currentPage].answerA}}</label>
+                <label><input ng-change="vm.enterAnswer1(vm.currentPage-1)" ng-model="vm.studentAnswer[vm.currentPage-1]" type="radio" value="A">A) {{vm.questions[vm.currentPage-1].answerA}}</label>
               </div>
               <br>
               <div class="radio-inline" style="float:none;">
-                <label><input ng-change="vm.enterAnswer1(vm.currentPage-1)" ng-model="vm.studentAnswer[vm.currentPage-1]" type="radio" value="B">B) {{vm.questions[vm.currentPage].answerB}}</label>
+                <label><input ng-change="vm.enterAnswer1(vm.currentPage-1)" ng-model="vm.studentAnswer[vm.currentPage-1]" type="radio" value="B">B) {{vm.questions[vm.currentPage-1].answerB}}</label>
               </div>
               <br>
               <div class="radio-inline" style="float:none;">
-                <label><input ng-change="vm.enterAnswer1(vm.currentPage-1)" ng-model="vm.studentAnswer[vm.currentPage-1]" type="radio" value="C">C) {{vm.questions[vm.currentPage].answerC}}</label>
+                <label><input ng-change="vm.enterAnswer1(vm.currentPage-1)" ng-model="vm.studentAnswer[vm.currentPage-1]" type="radio" value="C">C) {{vm.questions[vm.currentPage-1].answerC}}</label>
               </div>
               <br>
               <div class="radio-inline" style="float:none;">
-                <label><input ng-change="vm.enterAnswer1(vm.currentPage-1)" ng-model="vm.studentAnswer[vm.currentPage-1]" type="radio" value="D">D) {{vm.questions[vm.currentPage].answerD}}</label>
+                <label><input ng-change="vm.enterAnswer1(vm.currentPage-1)" ng-model="vm.studentAnswer[vm.currentPage-1]" type="radio" value="D">D) {{vm.questions[vm.currentPage-1].answerD}}</label>
               </div>
               <br><br>
               <!-- <input class="btn btn-success" type="submit" name="Submit" value="Submit Answer"> -->
             </form>
             <!-- For select two questions -->
-            <form ng-show="vm.questions[vm.currentPage].selectTwo=='Y'">
+            <form ng-show="vm.questions[vm.currentPage-1].selectTwo=='Y'">
               <label for="radio">Select the Two Best Answers: </label><br>
               <div class="checkbox-inline" style="float:none;">
-                <label><input ng-change="vm.enterAnswer2(vm.currentPage-1,0,'A')" ng-model="vm.studentAnswerA[vm.currentPage-1]" class="selectTwoQuest" type="checkbox" ng-true-value="'Y'" ng-false-value="'N'">A) {{vm.questions[vm.currentPage].answerA}}</label>
+                <label><input ng-change="vm.enterAnswer2(vm.currentPage-1,0,'A')" ng-model="vm.studentAnswerA[vm.currentPage-1]" class="selectTwoQuest" type="checkbox" ng-true-value="'Y'" ng-false-value="'N'">A) {{vm.questions[vm.currentPage-1].answerA}}</label>
               </div>
               <br>
               <div class="checkbox-inline" style="float:none;">
-                <label><input ng-change="vm.enterAnswer2(vm.currentPage-1,1,'B')" ng-model="vm.studentAnswerB[vm.currentPage-1]" class="selectTwoQuest" type="checkbox" ng-true-value="'Y'" ng-false-value="'N'">B) {{vm.questions[vm.currentPage].answerB}}</label>
+                <label><input ng-change="vm.enterAnswer2(vm.currentPage-1,1,'B')" ng-model="vm.studentAnswerB[vm.currentPage-1]" class="selectTwoQuest" type="checkbox" ng-true-value="'Y'" ng-false-value="'N'">B) {{vm.questions[vm.currentPage-1].answerB}}</label>
               </div>
               <br>
               <div class="checkbox-inline" style="float:none;">
-                <label><input ng-change="vm.enterAnswer2(vm.currentPage-1,2,'C')" ng-model="vm.studentAnswerC[vm.currentPage-1]" class="selectTwoQuest" type="checkbox" ng-true-value="'Y'" ng-false-value="'N'">C) {{vm.questions[vm.currentPage].answerC}}</label>
+                <label><input ng-change="vm.enterAnswer2(vm.currentPage-1,2,'C')" ng-model="vm.studentAnswerC[vm.currentPage-1]" class="selectTwoQuest" type="checkbox" ng-true-value="'Y'" ng-false-value="'N'">C) {{vm.questions[vm.currentPage-1].answerC}}</label>
               </div>
               <br>
               <div class="checkbox-inline" style="float:none;">
-                <label><input ng-change="vm.enterAnswer2(vm.currentPage-1,3,'D')" ng-model="vm.studentAnswerD[vm.currentPage-1]" class="selectTwoQuest" type="checkbox" ng-true-value="'Y'" ng-false-value="'N'">D) {{vm.questions[vm.currentPage].answerD}}</label>
+                <label><input ng-change="vm.enterAnswer2(vm.currentPage-1,3,'D')" ng-model="vm.studentAnswerD[vm.currentPage-1]" class="selectTwoQuest" type="checkbox" ng-true-value="'Y'" ng-false-value="'N'">D) {{vm.questions[vm.currentPage-1].answerD}}</label>
               </div>
               <br>
               <div class="checkbox-inline" style="float:none;">
-                <label><input ng-change="vm.enterAnswer2(vm.currentPage-1,4,'E')" ng-model="vm.studentAnswerE[vm.currentPage-1]" class="selectTwoQuest" type="checkbox" ng-true-value="'Y'" ng-false-value="'N'">E) {{vm.questions[vm.currentPage].answerE}}</label>
+                <label><input ng-change="vm.enterAnswer2(vm.currentPage-1,4,'E')" ng-model="vm.studentAnswerE[vm.currentPage-1]" class="selectTwoQuest" type="checkbox" ng-true-value="'Y'" ng-false-value="'N'">E) {{vm.questions[vm.currentPage-1].answerE}}</label>
               </div>
               <br><br>
               <!-- <input class="btn btn-success" type="submit" name="Submit" value="Submit Answer"> -->
@@ -120,42 +120,87 @@
       <h2 class="center">{{vm.examName}}</h2>
       <div class="row" ng-repeat="question in vm.questions">
         <div class="col-xs-8 col-xs-offset-2">
-          <h3>Question # {{$index+1}}</h3>
-          <p>
-            Question: {{question.question}}
-          </p>
+          <h3 style="margin-left: -50px;font-weight:bold;"><span ng-show="vm.answers[$index][0] == question.correctAnswer[0] && question.selectTwo != 'Y'" class="glyphicon glyphicon-ok-sign green"></span><span ng-show="vm.answers[$index][0] == question.correctAnswer[0] && vm.answers[$index][1] == question.correctAnswer[1] && question.selectTwo == 'Y'" class="glyphicon glyphicon-ok-sign green"></span><span ng-show="vm.answers[$index][0] != question.correctAnswer[0] && question.selectTwo != 'Y'" class="glyphicon glyphicon-remove-sign red"></span><span ng-show="(vm.answers[$index][0] != question.correctAnswer[0] || vm.answers[$index][1] != question.correctAnswer[1]) && question.selectTwo == 'Y'" class="glyphicon glyphicon-remove-sign red"></span>Question # {{$index+1}}</h3>
+          <h4>
+            {{question.question}}
+          </h4>
           <div ng-hide="question.selectTwo=='Y'">
-            <h3>Your Answer {{vm.answers[$index]}} Correct Answer {{question.correctAnswer}}</h3>
-            <p><span ng-show="question.correctAnswer[0] != 'A'" class="glyphicon glyphicon-remove-sign red"></span><span ng-show="question.correctAnswer[0] == 'A'" class="glyphicon glyphicon-ok-sign green"></span>A)
-              {{question.answerA}}
-            </p>
-            <p><span ng-show="question.correctAnswer[0] != 'B'" class="glyphicon glyphicon-remove-sign red"></span><span ng-show="question.correctAnswer[0] == 'B'" class="glyphicon glyphicon-ok-sign green"></span>B)
-              {{question.answerB}}
-            </p>
-            <p><span ng-show="question.correctAnswer[0] != 'C'" class="glyphicon glyphicon-remove-sign red"></span><span ng-show="question.correctAnswer[0] == 'C'" class="glyphicon glyphicon-ok-sign green"></span>C)
-              {{question.answerC}}
-            </p>
-            <p><span ng-show="question.correctAnswer[0] != 'D'" class="glyphicon glyphicon-remove-sign red"></span><span ng-show="question.correctAnswer[0] == 'D'" class="glyphicon glyphicon-ok-sign green"></span>D)
-              {{question.answerD}}
-            </p>
+            <h5>You Answered {{vm.answers[$index].toString()}} and the Correct Answer is {{question.correctAnswer.toString()}}</h5>
+            <div class="row">
+              <div class="col-xs-2" style="margin-left:-65px;text-align:right;">
+                <span ng-show="vm.answers[$index][0] == 'A'" class="glyphicon glyphicon-arrow-right black"></span><span ng-show="question.correctAnswer[0] != 'A' && vm.answers[$index][0]== 'A'" class="glyphicon glyphicon-remove-sign red"></span><span ng-show="question.correctAnswer[0] == 'A'" class="glyphicon glyphicon-ok-sign green"></span>A)
+              </div>
+              <div class="col-xs-10" style="margin-left:-25px;">
+                {{question.answerA}}
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xs-2" style="margin-left:-65px;text-align:right;">
+                <span ng-show="vm.answers[$index][0] == 'B'" class="glyphicon glyphicon-arrow-right black"></span><span ng-show="question.correctAnswer[0] != 'B' && (vm.answers[$index][0]== 'B' || vm.answers[$index][1]== 'B')" class="glyphicon glyphicon-remove-sign red"></span><span ng-show="question.correctAnswer[0] == 'B'" class="glyphicon glyphicon-ok-sign green"></span>B)
+              </div>
+              <div class="col-xs-10" style="margin-left:-25px;">
+                {{question.answerB}}
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xs-2" style="margin-left:-65px;text-align:right;">
+                <span ng-show="vm.answers[$index][0] == 'C'" class="glyphicon glyphicon-arrow-right black"></span><span ng-show="question.correctAnswer[0] != 'C' && vm.answers[$index]== 'C'" class="glyphicon glyphicon-remove-sign red"></span><span ng-show="question.correctAnswer[0] == 'C'" class="glyphicon glyphicon-ok-sign green"></span>C)
+              </div>
+              <div class="col-xs-10" style="margin-left:-25px;">
+                {{question.answerC}}
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xs-2" style="margin-left:-65px;text-align:right;">
+                <span ng-show="vm.answers[$index][0] == 'D'" class="glyphicon glyphicon-arrow-right black"></span><span ng-show="question.correctAnswer[0] != 'D' && vm.answers[$index]== 'D'" class="glyphicon glyphicon-remove-sign red"></span><span ng-show="question.correctAnswer[0] == 'D'" class="glyphicon glyphicon-ok-sign green"></span>D)
+              </div>
+              <div class="col-xs-10" style="margin-left:-25px;">
+                {{question.answerD}}
+              </div>
+            </div>
           </div>
           <div ng-show="question.selectTwo=='Y'">
-            <h3>Correct Answer {{question.correctAnswer}}</h3>
-            <p><span ng-show="question.correctAnswer[0] != 'A' && question.correctAnswer[1] != 'A'" class="glyphicon glyphicon-remove-sign red"></span><span ng-show="question.correctAnswer[0] == 'A' || question.correctAnswer[1] == 'A'" class="glyphicon glyphicon-ok-sign green"></span>A)
-              {{question.answerA}}
-            </p>
-            <p><span ng-show="question.correctAnswer[0] != 'B' && question.correctAnswer[1] != 'B'" class="glyphicon glyphicon-remove-sign red"></span><span ng-show="question.correctAnswer[0] == 'B' || question.correctAnswer[1] == 'B'" class="glyphicon glyphicon-ok-sign green"></span>B)
+            <h4>You Answered {{vm.answers[$index].toString()}} and the Correct Answer is {{question.correctAnswer.toString()}}</h4>
+            <div class="row">
+              <div class="col-xs-2" style="margin-left:-65px;text-align:right;">
+                <span ng-show="vm.answers[$index][0] == 'A' || vm.answers[$index][1] == 'A'" class="glyphicon glyphicon-arrow-right black"></span><span ng-show="(question.correctAnswer[0] != 'A' && question.correctAnswer[1] != 'A') && (vm.answers[$index][0] == 'A' || vm.answers[$index][1] == 'A')" class="glyphicon glyphicon-remove-sign red"></span><span ng-show="question.correctAnswer[0] == 'A' || question.correctAnswer[1] == 'A'" class="glyphicon glyphicon-ok-sign green"></span>A)
+              </div>
+              <div class="col-xs-10" style="margin-left:-25px;">
+                {{question.answerA}}
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xs-2" style="margin-left:-65px;text-align:right;">
+                <span ng-show="vm.answers[$index][0] == 'B' || vm.answers[$index][1] == 'B'" class="glyphicon glyphicon-arrow-right black"></span><span ng-show="(question.correctAnswer[0] != 'B' && question.correctAnswer[1] != 'B') && (vm.answers[$index][0] == 'B' || vm.answers[$index][1] == 'B')" class="glyphicon glyphicon-remove-sign red"></span><span ng-show="question.correctAnswer[0] == 'B' || question.correctAnswer[1] == 'B'" class="glyphicon glyphicon-ok-sign green"></span>B)
+              </div>
+              <div class="col-xs-10" style="margin-left:-25px;">
               {{question.answerB}}
-            </p>
-            <p><span ng-show="question.correctAnswer[0] != 'C' && question.correctAnswer[1] != 'C'" class="glyphicon glyphicon-remove-sign red"></span><span ng-show="question.correctAnswer[0] == 'C' || question.correctAnswer[1] == 'C'" class="glyphicon glyphicon-ok-sign green"></span>C)
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-xs-2" style="margin-left:-65px;text-align:right;">
+              <span ng-show="vm.answers[$index][0] == 'C' || vm.answers[$index][1] == 'C'" class="glyphicon glyphicon-arrow-right black"></span><span ng-show="(question.correctAnswer[0] != 'C' && question.correctAnswer[1] != 'C') && (vm.answers[$index][0] == 'C' || vm.answers[$index][1] == 'C')" class="glyphicon glyphicon-remove-sign red"></span><span ng-show="question.correctAnswer[0] == 'C' || question.correctAnswer[1] == 'C'" class="glyphicon glyphicon-ok-sign green"></span>C)
+            </div>
+            <div class="col-xs-10" style="margin-left:-25px;">
               {{question.answerC}}
-            </p>
-            <p><span ng-show="question.correctAnswer[0] != 'D' && question.correctAnswer[1] != 'D'" class="glyphicon glyphicon-remove-sign red"></span><span ng-show="question.correctAnswer[0] == 'D' || question.correctAnswer[1] == 'D'" class="glyphicon glyphicon-ok-sign green"></span>D)
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-xs-2" style="margin-left:-65px;text-align:right;">
+              <span ng-show="vm.answers[$index][0] == 'D' || vm.answers[$index][1] == 'D'" class="glyphicon glyphicon-arrow-right black"></span><span ng-show="(question.correctAnswer[0] != 'D' && question.correctAnswer[1] != 'D') && (vm.answers[$index][0] == 'D' || vm.answers[$index][1] == 'D')" class="glyphicon glyphicon-remove-sign red"></span><span ng-show="question.correctAnswer[0] == 'D' || question.correctAnswer[1] == 'D'" class="glyphicon glyphicon-ok-sign green"></span>D)
+            </div>
+            <div class="col-xs-10" style="margin-left:-25px;">
               {{question.answerD}}
-            </p>
-            <p><span ng-show="question.correctAnswer[0] != 'E' && question.correctAnswer[1] != 'E'" class="glyphicon glyphicon-remove-sign red"></span><span ng-show="question.correctAnswer[0] == 'E' || question.correctAnswer[1] == 'E'" class="glyphicon glyphicon-ok-sign green"></span>E)
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-xs-2" style="margin-left:-65px;text-align:right;">
+              <span ng-show="vm.answers[$index][0] == 'E' || vm.answers[$index][1] == 'E'" class="glyphicon glyphicon-arrow-right black"></span><span ng-show="(question.correctAnswer[0] != 'E' && question.correctAnswer[1] != 'E') && (vm.answers[$index][0] == 'E' || vm.answers[$index][1] == 'E')" class="glyphicon glyphicon-remove-sign red"></span><span ng-show="question.correctAnswer[0] == 'E' || question.correctAnswer[1] == 'E'" class="glyphicon glyphicon-ok-sign green"></span>E)
+            </div>
+            <div class="col-xs-10" style="margin-left:-25px;">
               {{question.answerE}}
-            </p>
+            </div>
+          </div>
           </div>
         </div>
       </div>

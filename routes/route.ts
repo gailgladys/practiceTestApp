@@ -15,15 +15,20 @@ router.get('/', function(req, res) {
 /* GET index route */
 router.get('/testBank', function(req, res, next) {
   let examNum = req.param('examNum');
+  console.log(examNum);
   if (examNum){
     Question.find({examNum: examNum}, function (err, questions) {
+      console.log(`questions: ${questions}`);
+      console.log(`questions.length: ${questions.length}`);
+      console.log(`err: ${err}`);
       if(questions.length){
         Exam.findOne({}, function(err, exam){
           let examName = exam.examNames[examNum.toString()];
           res.json({questions:questions,examName:examName});
         });
       } else {
-        res.json("");
+        console.log('no matches');
+        res.json({questions:""});
       }
     });
   } else {

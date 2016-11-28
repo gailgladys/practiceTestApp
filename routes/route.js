@@ -10,8 +10,12 @@ router.get('/', function (req, res) {
 });
 router.get('/testBank', function (req, res, next) {
     var examNum = req.param('examNum');
+    console.log(examNum);
     if (examNum) {
         Question.find({ examNum: examNum }, function (err, questions) {
+            console.log("questions: " + questions);
+            console.log("questions.length: " + questions.length);
+            console.log("err: " + err);
             if (questions.length) {
                 Exam.findOne({}, function (err, exam) {
                     var examName = exam.examNames[examNum.toString()];
@@ -19,7 +23,8 @@ router.get('/testBank', function (req, res, next) {
                 });
             }
             else {
-                res.json("");
+                console.log('no matches');
+                res.json({ questions: "" });
             }
         });
     }

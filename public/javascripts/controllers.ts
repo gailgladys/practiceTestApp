@@ -603,6 +603,7 @@ export class QuestionFormController {
           console.log(`this.students: ${JSON.stringify(this.students)}`);
           $http.get('/examsAvailable').then((response) => {
             this.examsAvailable = response.data;
+            console.log(`response.data: ${response.data}`);
           });
         });
         this.http = $http;

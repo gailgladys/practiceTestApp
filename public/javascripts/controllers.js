@@ -526,6 +526,7 @@ var MyApp;
                     console.log("this.students: " + JSON.stringify(_this.students));
                     $http.get('/examsAvailable').then(function (response) {
                         _this.examsAvailable = response.data;
+                        console.log("response.data: " + response.data);
                     });
                 });
                 this.http = $http;
