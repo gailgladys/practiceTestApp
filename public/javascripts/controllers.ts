@@ -331,6 +331,7 @@ export class QuestionFormController {
       public message2;
       public message3;
       public message4;
+      public message5;
       public answers;
       public studentAnswer;
       public studentAnswerA;
@@ -343,6 +344,7 @@ export class QuestionFormController {
       public examSelect;
       public examNameSelect;
       public subexamSelect;
+      public elapsedTime;
 
       pageChanged(){
         this.log.log('Page changed to: '+ this.currentPage);
@@ -352,20 +354,6 @@ export class QuestionFormController {
 
       goToPage(num){
         this.currentPage = num;
-      }
-
-      reset(){
-        console.log("clicked");
-        this.message = "";
-        this.test = "test";
-      }
-
-      key($event){
-        alert('hit key');
-      }
-
-      countdownZero(){
-        alert('You are out of time!');
       }
 
       selectExam(exam,subexam){
@@ -494,7 +482,9 @@ export class QuestionFormController {
 
       submitExam(out){
         console.log('exam submitted');
+        this.submitted = true;
         let self = this;
+        self.submitted = true;
         let unansweredArray = [];
         let gradeArray = [];
         let submitExamQuest = this.questions;
@@ -526,14 +516,13 @@ export class QuestionFormController {
           }
         }
         if(unansweredArray.length>0 && out!='outoftime'){
-
           let yn = confirm('You have not answered all the questions. Are you sure you want to submit?');
           if (yn==true){
             gradeExam();
           } else {
+            self.submitted = false;
             return;
           }
-
         } else {
           gradeExam();
         }
@@ -560,10 +549,12 @@ export class QuestionFormController {
           self.message4 = `Your grade is ${finalGrade}%`;
           console.log(string);
           self.message3 = string;
+          self.message5 = "You ran out of time!";
+          self.$scope.$apply();
         }
       }
 
-      constructor(public $state: ng.ui.IStateService, $http: ng.IHttpService,$stateParams,$log){
+      constructor(public $state: ng.ui.IStateService, $http: ng.IHttpService,$stateParams,$log, private $scope:ng.IScope, $rootScope: ng.IRootScopeService){
         let email = localStorage.getItem('email');
         $http.get('/getStud', {params: {email:email}}).then((response) => {
           console.log('response.data:');
@@ -587,6 +578,12 @@ export class QuestionFormController {
         this.answers = [];
         this.needTwo = [];
         this.submitted = false;
+        this.elapsedTime = 0;
+        this.$scope.$on('timer-tick', (event: ng.IAngularEvent, data: number) => {
+            console.log(`event.name = ${event.name}, timeoutId = ${data.timeoutId}, millis = ${data.millis}\n`);
+            this.elapsedTime++
+            console.log(`this.elapsedTime: ${this.elapsedTime}`);
+        });
       }
   }
 

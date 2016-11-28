@@ -276,9 +276,10 @@ var MyApp;
         Controllers.TestRandomizerController = TestRandomizerController;
         angular.module("MyApp").controller('TestRandomizerController', TestRandomizerController);
         var PracticeTestController = (function () {
-            function PracticeTestController($state, $http, $stateParams, $log) {
+            function PracticeTestController($state, $http, $stateParams, $log, $scope, $rootScope) {
                 var _this = this;
                 this.$state = $state;
+                this.$scope = $scope;
                 var email = localStorage.getItem('email');
                 $http.get('/getStud', { params: { email: email } }).then(function (response) {
                     console.log('response.data:');
@@ -302,6 +303,12 @@ var MyApp;
                 this.answers = [];
                 this.needTwo = [];
                 this.submitted = false;
+                this.elapsedTime = 0;
+                this.$scope.$on('timer-tick', function (event, data) {
+                    console.log("event.name = " + event.name + ", timeoutId = " + data.timeoutId + ", millis = " + data.millis + "\n");
+                    _this.elapsedTime++;
+                    console.log("this.elapsedTime: " + _this.elapsedTime);
+                });
             }
             PracticeTestController.prototype.pageChanged = function () {
                 this.log.log('Page changed to: ' + this.currentPage);
@@ -310,17 +317,6 @@ var MyApp;
             };
             PracticeTestController.prototype.goToPage = function (num) {
                 this.currentPage = num;
-            };
-            PracticeTestController.prototype.reset = function () {
-                console.log("clicked");
-                this.message = "";
-                this.test = "test";
-            };
-            PracticeTestController.prototype.key = function ($event) {
-                alert('hit key');
-            };
-            PracticeTestController.prototype.countdownZero = function () {
-                alert('You are out of time!');
             };
             PracticeTestController.prototype.selectExam = function (exam, subexam) {
                 var _this = this;
@@ -449,7 +445,9 @@ var MyApp;
             };
             PracticeTestController.prototype.submitExam = function (out) {
                 console.log('exam submitted');
+                this.submitted = true;
                 var self = this;
+                self.submitted = true;
                 var unansweredArray = [];
                 var gradeArray = [];
                 var submitExamQuest = this.questions;
@@ -490,6 +488,7 @@ var MyApp;
                         gradeExam();
                     }
                     else {
+                        self.submitted = false;
                         return;
                     }
                 }
@@ -520,6 +519,8 @@ var MyApp;
                     self.message4 = "Your grade is " + finalGrade + "%";
                     console.log(string);
                     self.message3 = string;
+                    self.message5 = "You ran out of time!";
+                    self.$scope.$apply();
                 }
             };
             return PracticeTestController;
