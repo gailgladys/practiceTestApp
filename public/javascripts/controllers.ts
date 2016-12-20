@@ -561,8 +561,9 @@ export class QuestionFormController {
         }
       }
 
-      constructor(public $state: ng.ui.IStateService, $http: ng.IHttpService,$stateParams,$log, private $scope:ng.IScope, $rootScope: ng.IRootScopeService){
-        let email = localStorage.getItem('email');
+      constructor(accountService: MyApp.Services.AccountService, public $state: ng.ui.IStateService, $http: ng.IHttpService,$stateParams,$log, private $scope:ng.IScope, $rootScope: ng.IRootScopeService){
+        let email = accountService.currentUser().email;
+        console.log(`practice test constructor - email: ${email}`);
         $http.get('/getStud', {params: {email:email}}).then((response) => {
           console.log('response.data:');
           console.log(response.data);
@@ -751,42 +752,72 @@ export class QuestionFormController {
 
     export class LoginController {
 
+      public state;
       public accountService;
       public user;
       public http;
       public message;
 
-      public close() {
-        this.$uibModalInstance.close();
-      }
-
-      public ok() {
-        console.log(this.http);
+      loginUser(){
+        console.log(`loginUser() this.accountService: ${this.accountService}`);
         this.message = "Submited";
-        // let username = this.user.username;
         let email = this.user.email;
         let password = this.user.password;
-        // console.log(`Username: ${username}`);
         console.log(`Email: ${email}`);
-        console.log(`Password1: ${password}`);
+        console.log(`Password: ${password}`);
+        console.log(`loginUser() this.state: ${this.state}`);
         let data = {
-            //  username: username,
              email: email,
              password: password,
              created_at: new Date()
             }
-        console.log(data);
-        // this.http.post("/loginCheck", data).success(function(data, status) {
-        //     console.log(data);
-        // });
+        console.log(`Data object: ${data}`);
+        this.user.email = "";
+        this.user.password = "";
+        let self = this;
+        let acct = this.accountService;
+        console.log(`acct: ${acct}`);
+        acct.login(data).then(function(){
+          self.$uibModalInstance.close();
+          self.state.go('StudentDisplay');
+        }, function(err){
+          alert(err);
+        });
 
-        this.accountService.login(data);
+      }
+
+      public close() {
         this.$uibModalInstance.close();
       }
 
-      constructor(private $uibModalInstance: angular.ui.bootstrap.IModalServiceInstance, accountService: MyApp.Services.AccountService, $http: ng.IHttpService) {
+      // public ok() {
+      //   console.log(this.http);
+      //   this.message = "Submited";
+      //   // let username = this.user.username;
+      //   let email = this.user.email;
+      //   let password = this.user.password;
+      //   // console.log(`Username: ${username}`);
+      //   console.log(`Email: ${email}`);
+      //   console.log(`Password1: ${password}`);
+      //   let data = {
+      //       //  username: username,
+      //        email: email,
+      //        password: password,
+      //        created_at: new Date()
+      //       }
+      //   console.log(data);
+      //   // this.http.post("/loginCheck", data).success(function(data, status) {
+      //   //     console.log(data);
+      //   // });
+      //
+      //   this.accountService.login(data);
+      //   this.$uibModalInstance.close();
+      // }
+
+      constructor(private $uibModalInstance: angular.ui.bootstrap.IModalServiceInstance, accountService: MyApp.Services.AccountService, $http: ng.IHttpService, $state: ng.ui.IStateProvider) {
         this.accountService = accountService;
         this.http = $http;
+        this.state = $state;
       }
 
     }
@@ -851,5 +882,60 @@ export class QuestionFormController {
           }
       }
       angular.module("MyApp").controller('RegistrationController', RegistrationController);
+
+      export class StudentDisplayController {
+        public message;
+        public user;
+
+        constructor(accountService: MyApp.Services.AccountService){
+          this.message = "This is the student display controller";
+          this.user = accountService.currentUser();
+        }
+      }
+
+      angular.module('MyApp').controller('StudentDisplayController', StudentDisplayController);
+
+      export class NavigationController {
+
+          public isLoggedIn;
+          public currentUser;
+          public acct;
+          public state;
+          public isAdmin;
+
+          logout(){
+            console.log('clicked the logout btn');
+            let self = this.state;
+            this.acct.logout();
+            self.go('Index');
+          }
+
+          public showModal() {
+              this.$uibModal.open({
+                  templateUrl: '/templates/login.html',
+                  controller: 'LoginController',
+                  controllerAs: 'modal',
+                  size: 'md'
+              });
+          }
+
+          constructor(accountService: MyApp.Services.AccountService, $rootScope: ng.IRootScopeService, $state: ng.ui.IStateProvider, private $uibModal: angular.ui.bootstrap.IModalService){
+
+            this.isLoggedIn = accountService.isLoggedIn();
+            this.isAdmin = accountService.isAdmin();
+            $rootScope.$on('navUpdate',()=>{
+              console.log('navUpdated');
+              this.isLoggedIn = accountService.isLoggedIn();
+              this.currentUser = accountService.currentUser();
+              this.isAdmin = accountService.isAdmin();
+            })
+            console.log(`this.isLoggedIn`)
+            this.currentUser = accountService.currentUser();
+            this.acct = accountService;
+            this.state = $state;
+          }
+        }
+
+        angular.module('MyApp').controller('NavigationController', NavigationController);
 
 }

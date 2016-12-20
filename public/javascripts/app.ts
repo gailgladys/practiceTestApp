@@ -11,18 +11,27 @@ namespace MyApp {
           .state('TestBank', {
               url: '/testBank',
               templateUrl: "/templates/testBank.html",
+              data: {
+                requiresAdmin: true
+              },
               controller: MyApp.Controllers.TestBankController,
               controllerAs: 'vm'
           })
           .state('TestArray', {
               url: '/testArray',
               templateUrl: "/templates/testArray.html",
+              data: {
+                requiresAdmin: true
+              },
               controller: MyApp.Controllers.TestArrayController,
               controllerAs: 'vm'
           })
           .state('TestRandomizer', {
               url: '/testRandomizer',
               templateUrl: "/templates/testRandomizer.html",
+              data: {
+                requiresAdmin: true
+              },
               controller: MyApp.Controllers.TestRandomizerController,
               controllerAs: 'vm'
           })
@@ -31,6 +40,15 @@ namespace MyApp {
               templateUrl: "/templates/login.html",
               controller: MyApp.Controllers.LoginController,
               controllerAs: 'modal'
+          })
+          .state('StudentDisplay', {
+              url: '/studentDisplay',
+              templateUrl: "/templates/studentDisplay.html",
+              data: {
+                requiresAuthentication: true
+              },
+              controller: MyApp.Controllers.StudentDisplayController,
+              controllerAs: 'vm'
           })
           .state('Register', {
               url: '/register',
@@ -41,18 +59,27 @@ namespace MyApp {
           .state('QuestionForm', {
               url: '/questionForm',
               templateUrl: "/templates/questionForm.html",
+              data: {
+                requiresAdmin: true
+              },
               controller: MyApp.Controllers.QuestionFormController,
               controllerAs: 'ctrl'
           })
           .state('Admin', {
               url: '/admin',
               templateUrl: "/templates/admin.html",
+              data: {
+                requiresAdmin: true
+              },
               controller: MyApp.Controllers.AdminController,
               controllerAs: 'vm'
           })
           .state('PracticeTest', {
               url: '/practiceTest',
               templateUrl: "/templates/practiceTest.html",
+              data: {
+                requiresAuthentication: true
+              },
               controller: MyApp.Controllers.PracticeTestController,
               controllerAs: 'vm'
           });
@@ -69,6 +96,12 @@ namespace MyApp {
                 // protect non-public views
                 if (to.data && to.data.requiresAuthentication) {
                     if (!accountService.isLoggedIn()) {
+                        e.preventDefault();
+                        $state.go('Index');
+                    }
+                }
+                if (to.data && to.data.requiresAdmin) {
+                    if (!accountService.isAdmin()) {
                         e.preventDefault();
                         $state.go('Index');
                     }

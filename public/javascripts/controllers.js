@@ -276,11 +276,12 @@ var MyApp;
         Controllers.TestRandomizerController = TestRandomizerController;
         angular.module("MyApp").controller('TestRandomizerController', TestRandomizerController);
         var PracticeTestController = (function () {
-            function PracticeTestController($state, $http, $stateParams, $log, $scope, $rootScope) {
+            function PracticeTestController(accountService, $state, $http, $stateParams, $log, $scope, $rootScope) {
                 var _this = this;
                 this.$state = $state;
                 this.$scope = $scope;
-                var email = localStorage.getItem('email');
+                var email = accountService.currentUser().email;
+                console.log("practice test constructor - email: " + email);
                 $http.get('/getStud', { params: { email: email } }).then(function (response) {
                     console.log('response.data:');
                     console.log(response.data);
@@ -647,28 +648,39 @@ var MyApp;
         Controllers.TestDisplayController = TestDisplayController;
         angular.module("MyApp").controller('TestDisplayController', TestDisplayController);
         var LoginController = (function () {
-            function LoginController($uibModalInstance, accountService, $http) {
+            function LoginController($uibModalInstance, accountService, $http, $state) {
                 this.$uibModalInstance = $uibModalInstance;
                 this.accountService = accountService;
                 this.http = $http;
+                this.state = $state;
             }
-            LoginController.prototype.close = function () {
-                this.$uibModalInstance.close();
-            };
-            LoginController.prototype.ok = function () {
-                console.log(this.http);
+            LoginController.prototype.loginUser = function () {
+                console.log("loginUser() this.accountService: " + this.accountService);
                 this.message = "Submited";
                 var email = this.user.email;
                 var password = this.user.password;
                 console.log("Email: " + email);
-                console.log("Password1: " + password);
+                console.log("Password: " + password);
+                console.log("loginUser() this.state: " + this.state);
                 var data = {
                     email: email,
                     password: password,
                     created_at: new Date()
                 };
-                console.log(data);
-                this.accountService.login(data);
+                console.log("Data object: " + data);
+                this.user.email = "";
+                this.user.password = "";
+                var self = this;
+                var acct = this.accountService;
+                console.log("acct: " + acct);
+                acct.login(data).then(function () {
+                    self.$uibModalInstance.close();
+                    self.state.go('StudentDisplay');
+                }, function (err) {
+                    alert(err);
+                });
+            };
+            LoginController.prototype.close = function () {
                 this.$uibModalInstance.close();
             };
             return LoginController;
@@ -723,5 +735,49 @@ var MyApp;
         }());
         Controllers.RegistrationController = RegistrationController;
         angular.module("MyApp").controller('RegistrationController', RegistrationController);
+        var StudentDisplayController = (function () {
+            function StudentDisplayController(accountService) {
+                this.message = "This is the student display controller";
+                this.user = accountService.currentUser();
+            }
+            return StudentDisplayController;
+        }());
+        Controllers.StudentDisplayController = StudentDisplayController;
+        angular.module('MyApp').controller('StudentDisplayController', StudentDisplayController);
+        var NavigationController = (function () {
+            function NavigationController(accountService, $rootScope, $state, $uibModal) {
+                var _this = this;
+                this.$uibModal = $uibModal;
+                this.isLoggedIn = accountService.isLoggedIn();
+                this.isAdmin = accountService.isAdmin();
+                $rootScope.$on('navUpdate', function () {
+                    console.log('navUpdated');
+                    _this.isLoggedIn = accountService.isLoggedIn();
+                    _this.currentUser = accountService.currentUser();
+                    _this.isAdmin = accountService.isAdmin();
+                });
+                console.log("this.isLoggedIn");
+                this.currentUser = accountService.currentUser();
+                this.acct = accountService;
+                this.state = $state;
+            }
+            NavigationController.prototype.logout = function () {
+                console.log('clicked the logout btn');
+                var self = this.state;
+                this.acct.logout();
+                self.go('Index');
+            };
+            NavigationController.prototype.showModal = function () {
+                this.$uibModal.open({
+                    templateUrl: '/templates/login.html',
+                    controller: 'LoginController',
+                    controllerAs: 'modal',
+                    size: 'md'
+                });
+            };
+            return NavigationController;
+        }());
+        Controllers.NavigationController = NavigationController;
+        angular.module('MyApp').controller('NavigationController', NavigationController);
     })(Controllers = MyApp.Controllers || (MyApp.Controllers = {}));
 })(MyApp || (MyApp = {}));

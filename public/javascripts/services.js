@@ -2,55 +2,100 @@ var MyApp;
 (function (MyApp) {
     var Services;
     (function (Services) {
-        var loginBool = "";
         var AccountService = (function () {
-            function AccountService($http) {
+            function AccountService($http, $window, $rootScope) {
                 this.http = $http;
+                this.window = $window;
+                this.rootScope = $rootScope;
             }
-            AccountService.prototype.login = function (data) {
-                console.log("Account Service:");
-                console.log("Username: " + data.username);
-                console.log("Email: " + data.email);
-                console.log("Password: " + data.password);
-                this.http.post("/v1/api/Login/Local", data).success(function (data, status) {
-                    console.log(data);
-                    console.log(data.user.username);
-                    localStorage.setItem('token', data.token);
-                    localStorage.setItem('username', data.user.username);
-                    localStorage.setItem('email', data.user.email);
-                    localStorage.setItem('status', data.user.status);
-                    console.log('Storage complete');
-                    var testToken = localStorage.getItem('token');
-                    var testUsername = localStorage.getItem('username');
-                    var testEmail = localStorage.getItem('email');
-                    var testStatus = localStorage.getItem('status');
-                    console.log("Storage Token: " + testToken);
-                    console.log("Storage Username: " + testUsername);
-                    console.log("Storage Email: " + testEmail);
-                    console.log("Storage Status: " + testStatus);
-                    loginBool = testUsername;
-                    console.log("loginBool: " + loginBool);
-                });
+            AccountService.prototype.saveToken = function (token) {
+                console.log("saveToken - token: " + token);
+                localStorage.setItem('mean-token', token);
+            };
+            AccountService.prototype.getToken = function () {
+                var token = localStorage.getItem('mean-token');
+                console.log("getToken - token: " + token);
+                return localStorage.getItem('mean-token');
             };
             AccountService.prototype.logout = function () {
-                localStorage.setItem('token', '');
-                localStorage.setItem('username', '');
-                localStorage.setItem('email', '');
-                localStorage.setItem('status', '');
-                console.log('Storage complete');
-                var testToken = localStorage.getItem('token');
-                var testUsername = localStorage.getItem('username');
-                var testEmail = localStorage.getItem('email');
-                var testStatus = localStorage.getItem('status');
-                console.log("Storage Token: " + testToken);
-                console.log("Storage Username: " + testUsername);
-                console.log("Storage Email: " + testEmail);
-                console.log("Storage Status: " + testStatus);
-                loginBool = "";
-                console.log("loginBool: " + loginBool);
+                localStorage.removeItem('mean-token');
+                this.rootScope.$broadcast('navUpdate');
             };
             AccountService.prototype.isLoggedIn = function () {
-                return loginBool;
+                var token = this.getToken();
+                console.log("isLoggedIn - token: " + token);
+                var payload;
+                if (token) {
+                    payload = token.split('.')[1];
+                    console.log("isLoggedIn - payload: " + payload);
+                    payload = this.window.atob(payload);
+                    payload = JSON.parse(payload);
+                    console.log("payload['iat']: " + payload['exp']);
+                    console.log("payload after .atob and .parse: " + JSON.stringify(payload));
+                    console.log("Date.now()/1000: " + Date.now() / 1000);
+                    return payload['exp'] > Date.now() / 1000;
+                }
+                else {
+                    return false;
+                }
+            };
+            AccountService.prototype.currentUser = function () {
+                if (this.isLoggedIn()) {
+                    var token = this.getToken();
+                    console.log("token: " + token);
+                    var payload = token.split('.')[1];
+                    console.log("payload: " + payload);
+                    payload = this.window.atob(payload);
+                    payload = JSON.parse(payload);
+                    return {
+                        email: payload['email'],
+                        name: payload['username'],
+                        role: payload['role']
+                    };
+                }
+            };
+            AccountService.prototype.register = function (student) {
+                console.log("register - student: " + student);
+                console.log("register - JSON.stringify(student): " + JSON.stringify(student));
+                var self = this;
+                return this.http.post('/register', student).then(function (data) {
+                    console.log("register service - data: " + JSON.stringify(data));
+                    console.log("register service - data.data: " + JSON.stringify(data.data));
+                    console.log("register service - data.data.token: " + JSON.stringify(data.data.token));
+                    self.saveToken(data.data.token);
+                    self.rootScope.$broadcast('navUpdate');
+                });
+            };
+            AccountService.prototype.login = function (student) {
+                var self = this;
+                return this.http.post('/login', student).then(function (data) {
+                    console.log("login service - data: " + JSON.stringify(data));
+                    console.log("login service - data.data: " + JSON.stringify(data.data));
+                    console.log("login service - data.data.token: " + JSON.stringify(data.data.token));
+                    self.saveToken(data.data.token);
+                    self.rootScope.$broadcast('navUpdate');
+                });
+            };
+            AccountService.prototype.isAdmin = function () {
+                console.log('hit service isAdmin()');
+                console.log("isLoggedIn(): " + this.isLoggedIn());
+                if (this.isLoggedIn()) {
+                    var token = this.getToken();
+                    console.log("token: " + token);
+                    var payload = token.split('.')[1];
+                    console.log("payload: " + payload);
+                    payload = this.window.atob(payload);
+                    payload = JSON.parse(payload);
+                    if (payload['role'] == 'admin') {
+                        return true;
+                    }
+                    else {
+                        return false;
+                    }
+                }
+                else {
+                    return false;
+                }
             };
             return AccountService;
         }());

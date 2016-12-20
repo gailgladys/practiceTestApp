@@ -4,22 +4,24 @@ import bodyParser = require('body-parser');
 import logger = require('morgan');
 import favicon = require('serve-favicon');
 import passport = require("passport");
+import flash = require('connect-flash');
+import cookieParser = require('cookie-parser');
+import cookieSession = require('cookie-session');
+import session = require('express-session');
+import csrf = require('csurf');
+import methodOverride = require('method-override');
 
-let routes = require('./routes/route');
+require('./app_api/models/user');
+require('./app_api/config/passport');
+
+let routes = require('./app_api/routes/index');
 let app = express();
 let port = process.env.PORT || 3000;
 
-require('./models/user');
-require('./config/passport');
-
 app.set('views', path.join(__dirname, 'views'));
-//set the view engine that will render HTML from the server to the client
 app.engine('.html', require('ejs').renderFile);
-//Allow for these directories to be usable on the client side
 app.use(express.static(__dirname + '/public'));
-// app.use(express.static('./public'));
 app.use(express.static(__dirname + '/bower_components'));
-//we want to render html files
 app.set('view engine', 'html');
 app.set('view options', {
 	layout: false
@@ -29,16 +31,42 @@ app.use(favicon(path.join(__dirname, 'public', 'images/favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
+app.use(methodOverride());
+app.use(cookieParser());
+app.use(session(
+    {
+        secret: process.env.COOKIE_SECRET || "Superdupersecret"
+    }));
+
+var env = process.env.NODE_ENV || 'development';
+if ('development' === env || 'production' === env) {
+    app.use(csrf());
+    app.use(function(req, res, next) {
+        res.cookie('XSRF-TOKEN', req.csrfToken());
+        next();
+    });
+}
+
 app.use(passport.initialize());
+app.use(passport.session());
 
 // Mongoose connection
 let mongoose = require('mongoose');
 mongoose.connect(process.env.MONGOLAB_URI16);
 
-app.use('/', routes);
-let userRoutes = require("./routes/userRoutes");
-app.use('/v1/api/',userRoutes);
+// Connect flash
+app.use(flash());
 
+//Global Vars
+app.use(function(req,res,next){
+  res.locals.success_msg = req.flash('success_msg');
+  res.locals.error_msg = req.flash('error_msg');
+  res.locals.error = req.flash('error');
+  res.locals.user = req.user || null;
+  next();
+});
+
+app.use('/', routes);
 
 let server = app.listen(3000, 'localhost', function () {
   let host = server.address().address;

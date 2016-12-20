@@ -17,7 +17,7 @@
 <tbody id="row" style="padding:10px;">
   <tr ng-repeat="student in vm.students">
     <td class="student" value="$index">
-      {{student.username}}
+      <span class="label" data-ng-class="{&quot;label-info&quot;: student.role == 'student', &quot;label-success&quot;: student.role == 'admin'}">{{ student.role }}</span>{{student.username}}
     </td>
     <td>
       <span ng-repeat="(key,value) in student.practiceTests">Exam {{key}}

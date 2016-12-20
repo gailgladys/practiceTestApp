@@ -56,7 +56,13 @@ th, td {
 
 #log_in {
   position: relative;
-  margin-top: 13%;
+  margin-top: 9%;
+  margin-left: -10%;
+}
+
+#log_out {
+  position: relative;
+  margin-top: 11%;
   margin-left: -10%;
 }
 
