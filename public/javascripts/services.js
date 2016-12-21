@@ -48,9 +48,11 @@ var MyApp;
                     payload = this.window.atob(payload);
                     payload = JSON.parse(payload);
                     return {
+                        _id: payload['id'],
                         email: payload['email'],
                         name: payload['username'],
-                        role: payload['role']
+                        role: payload['role'],
+                        avatar: payload['avatar']
                     };
                 }
             };
@@ -73,6 +75,29 @@ var MyApp;
                     console.log("login service - data.data: " + JSON.stringify(data.data));
                     console.log("login service - data.data.token: " + JSON.stringify(data.data.token));
                     self.saveToken(data.data.token);
+                    self.rootScope.$broadcast('navUpdate');
+                });
+            };
+            AccountService.prototype.forgot = function (student) {
+                var self = this;
+                return this.http.post('/forgot', student).then(function (data) {
+                    console.log("forgot service - data: " + JSON.stringify(data));
+                    self.rootScope.$broadcast('navUpdate');
+                });
+            };
+            AccountService.prototype.reset = function (student) {
+                var self = this;
+                return this.http.post('/reset', student).then(function (data) {
+                    console.log("reset service - data: " + JSON.stringify(data));
+                    self.rootScope.$broadcast('navUpdate');
+                });
+            };
+            AccountService.prototype.secret = function () {
+                var self = this;
+                var payload = this.getToken();
+                console.log("secret() payload: " + payload);
+                return this.http.get('/profile').then(function (data) {
+                    console.log("secret service - data: " + JSON.stringify(data));
                     self.rootScope.$broadcast('navUpdate');
                 });
             };

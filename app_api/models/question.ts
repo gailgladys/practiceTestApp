@@ -1,5 +1,4 @@
-// /models/question.js
-var mongoose = require('mongoose');
+import mongoose = require('mongoose');
 
 var questionSchema = new mongoose.Schema({
   examNum: Number,

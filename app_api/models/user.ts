@@ -2,19 +2,22 @@ import mongoose = require('mongoose');
 import crypto = require('crypto');
 import jwt = require("jsonwebtoken");
 
-let userSchema = new mongoose.Schema({
+var userSchema = new mongoose.Schema({
   username: { type: String, unique: true, required: true},
   email: { type: String, required: true, unique: true},
   passwordHash: String,
   salt: String,
   role: String,
+  avatar: String,
+  resetPasswordToken: String,
+  resetPasswordExpires: Date,
   practiceTests: Object,
   grades: Object,
   examsAvailable: Array,
   examNames: Object,
   created_at: Date,
   updated_at: Date
-})
+});
 
 userSchema.method('setPassword', function(password) {
   this.salt = crypto.randomBytes(16).toString('hex');
@@ -33,15 +36,16 @@ userSchema.method('generateJwt', function() {
   console.log(`expiry.getTime(): ${expiry.getTime()}`);
 
   return jwt.sign({
-    id: this._id,
+    _id: this._id,
     username: this.username,
     email: this.email,
     role: this.role,
+    avatar: this.avatar,
     exp: parseInt(expiry.getTime() / 1000),
-  }, 'SecretKey');
+  }, "MY_SECRET");
 });
 
-let User = mongoose.model('User', userSchema);
+var User = mongoose.model('User', userSchema);
 
 // Make this available to our other files
 module.exports = User;

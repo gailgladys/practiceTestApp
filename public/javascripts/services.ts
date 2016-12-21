@@ -51,14 +51,13 @@ namespace MyApp.Services {
         console.log(`payload: ${payload}`);
         payload = this.window.atob(payload);
         payload = JSON.parse(payload);
-        // console.log(`payload after .atob and .parse: ${JSON.stringify(payload)}`);
-        // console.log(`payload['email']: ${payload['email']}`);
-        // console.log(`payload.email: ${payload.email}`);
 
         return {
+          _id: payload['id'],
           email : payload['email'],
           name : payload['username'],
-          role : payload['role']
+          role : payload['role'],
+          avatar: payload['avatar']
         };
       }
     }
@@ -87,6 +86,31 @@ namespace MyApp.Services {
       });
     }
 
+    forgot(student) {
+      let self = this;
+      return this.http.post('/forgot', student).then(function(data) {
+        console.log(`forgot service - data: ${JSON.stringify(data)}`);
+        self.rootScope.$broadcast('navUpdate');
+      });
+    }
+
+    reset(student) {
+      let self = this;
+      return this.http.post('/reset', student).then(function(data) {
+        console.log(`reset service - data: ${JSON.stringify(data)}`);
+        self.rootScope.$broadcast('navUpdate');
+      });
+    }
+
+    secret() {
+      let self = this;
+      let payload = this.getToken();
+      console.log(`secret() payload: ${payload}`);
+      return this.http.get('/profile').then(function(data) {
+        console.log(`secret service - data: ${JSON.stringify(data)}`);
+        self.rootScope.$broadcast('navUpdate');
+      });
+    }
 
     public isAdmin() {
       console.log('hit service isAdmin()');

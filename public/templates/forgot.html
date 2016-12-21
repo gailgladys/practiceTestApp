@@ -1,0 +1,12 @@
+<br><br><br><br>
+<h1>Forget Page</h1>
+<p class="btn btn-info">{{vm.message}}</p>
+<div class="container center">
+<form class="forget_form" name="forget_form" ng-submit="vm.forgotPass()">
+  <label for="email">Email:</label>
+  <br>
+  <input type="email" ng-model="vm.user.email" name="email" size="50" placeholder="E-mail" ng-model="mail">
+  <br>
+  <input class="btn btn-success" type="submit" name="submit" value="Submit">
+</form>
+</div>

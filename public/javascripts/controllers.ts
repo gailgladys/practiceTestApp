@@ -3,53 +3,10 @@ namespace MyApp.Controllers {
   export class MainController {
       public message;
       public title;
-      public students;
-      public searchInput;
-      public http;
-      public accountService;
-      public username;
-      public token;
 
-      public login(){
-        return this.accountService.isLoggedIn();
-      }
-
-      public logout(){
-        this.accountService.logout();
-      }
-
-      search(){
-        console.log('main.search() - searchInput: ',this.searchInput);
-        if (this.searchInput){
-          this.http.get('/search',{params: {search: this.searchInput}}).then((response) => {
-              this.students = response.data;
-              console.log(this.students);
-              console.log(this.students.length);
-          });
-        } else {
-          this.students = "";
-        }
-      }
-
-      constructor(private $state: ng.ui.IStateService, private $uibModal: angular.ui.bootstrap.IModalService, $http: ng.IHttpService, accountService: MyApp.Services.AccountService) {
-        this.http = $http;
-        // $http.get('/studentData').then((response) => {
-        //   this.students = response.data
-        // });
+      constructor() {
         this.message = "Welcome to the Main page - enjoy your stay!";
         this.title = "Index Page";
-        this.username = localStorage.getItem('username');
-        this.token = localStorage.getItem('token');
-        this.accountService = accountService;
-      }
-
-      public showModal() {
-          this.$uibModal.open({
-              templateUrl: '/templates/login.html',
-              controller: 'LoginController',
-              controllerAs: 'modal',
-              size: 'md'
-          });
       }
 
   }
@@ -562,15 +519,21 @@ export class QuestionFormController {
       }
 
       constructor(accountService: MyApp.Services.AccountService, public $state: ng.ui.IStateService, $http: ng.IHttpService,$stateParams,$log, private $scope:ng.IScope, $rootScope: ng.IRootScopeService){
-        let email = accountService.currentUser().email;
-        console.log(`practice test constructor - email: ${email}`);
-        $http.get('/getStud', {params: {email:email}}).then((response) => {
-          console.log('response.data:');
-          console.log(response.data);
-          this.student = response.data;
-          this.examsAvailable = this.student.examsAvailable;
-          this.message = "";
-        });
+        $http.get('/profile', {
+          headers: {
+            Authorization: 'Bearer '+ accountService.getToken()
+          }
+        }).then((response) => {
+            this.student = response.data;
+            console.log(`this.student: ${JSON.stringify(this.student)}`);
+            var avatar = this.student.avatar;
+            console.log(`avatar: ${avatar}`);
+            this.student.avatar = this.student.avatar.substring(6,this.student.avatar.length);
+            this.student.avatar = "https://s."+this.student.avatar+"?s=100&r=x&d=retro";
+            console.log(`avatar: ${this.student.avatar}`);
+            this.examsAvailable = this.student.examsAvailable;
+            this.message = "";
+          });
         this.message = "";
         this.moreMessage = "";
         this.messageMin = "";
@@ -616,18 +579,42 @@ export class QuestionFormController {
         });
       }
 
-      constructor(public $state: ng.ui.IStateService, $http: ng.IHttpService,$stateParams){
-        $http.get('/Admin').then((response) => {
-          this.students = response.data;
-          console.log(`this.students: ${JSON.stringify(this.students)}`);
-          $http.get('/examsAvailable').then((response) => {
-            this.examsAvailable = response.data;
-            console.log(`response.data: ${response.data}`);
+      constructor(accountService: MyApp.Services.AccountService, public $state: ng.ui.IStateService, $http: ng.IHttpService,$stateParams){
+        $http.get('/adminAssign', {
+          headers: {
+            Authorization: 'Bearer '+ accountService.getToken()
+          }
+        }).then((response) => {
+          console.log(`response.data: ${response.data}`);
+          console.log(`JSON.stringify(response.data): ${JSON.stringify(response.data)}`);
+            this.students = response.data['users'];
+            console.log(`this.students: ${JSON.stringify(this.students)}`);
+            // using map to alter all the avatars
+            this.students = this.students.map(function(ava){
+              if(ava.avatar){
+                ava.avatar=ava.avatar.substring(6,ava.avatar.length);
+                ava.avatar = "https://s."+ava.avatar+"?s=50&r=x&d=retro";
+              }
+              return ava;
+            })
+            this.examsAvailable = response.data['exams'];
+            console.log(`this.examsAvailable: ${JSON.stringify(this.examsAvailable)}`);
           });
-        });
-        this.http = $http;
-      }
-  }
+        }
+}
+
+      //
+      //   $http.get('/admin').then((response) => {
+      //     this.students = response.data;
+      //     console.log(`this.students: ${JSON.stringify(this.students)}`);
+      //     $http.get('/examsAvailable').then((response) => {
+      //       this.examsAvailable = response.data;
+      //       console.log(`response.data: ${response.data}`);
+      //     });
+      //   });
+      //   this.http = $http;
+      // }
+
 
   angular.module("MyApp").controller('AdminController', AdminController);
 
@@ -790,81 +777,145 @@ export class QuestionFormController {
         this.$uibModalInstance.close();
       }
 
-      // public ok() {
-      //   console.log(this.http);
-      //   this.message = "Submited";
-      //   // let username = this.user.username;
-      //   let email = this.user.email;
-      //   let password = this.user.password;
-      //   // console.log(`Username: ${username}`);
-      //   console.log(`Email: ${email}`);
-      //   console.log(`Password1: ${password}`);
-      //   let data = {
-      //       //  username: username,
-      //        email: email,
-      //        password: password,
-      //        created_at: new Date()
-      //       }
-      //   console.log(data);
-      //   // this.http.post("/loginCheck", data).success(function(data, status) {
-      //   //     console.log(data);
-      //   // });
-      //
-      //   this.accountService.login(data);
-      //   this.$uibModalInstance.close();
-      // }
-
       constructor(private $uibModalInstance: angular.ui.bootstrap.IModalServiceInstance, accountService: MyApp.Services.AccountService, $http: ng.IHttpService, $state: ng.ui.IStateProvider) {
         this.accountService = accountService;
         this.http = $http;
         this.state = $state;
+        this.message = "This is the login form";
       }
 
     }
 
     angular.module('MyApp').controller('LoginController', LoginController);
 
-      export class RegistrationController {
+    export class RegistrationController {
+        public message;
+        public http;
+        public user;
+        public state;
+        public accountService;
+
+        newUser(){
+          console.log(`newUser() this.accountService: ${this.accountService}`);
+          this.message = "Submited";
+          let username = this.user.username;
+          let email = this.user.email;
+          let password = this.user.password;
+          console.log(`Username: ${username}`);
+          console.log(`Email: ${email}`);
+          console.log(`Password: ${password}`);
+          console.log(`newUser() this.state: ${this.state}`);
+          let data = {
+               username: username,
+               email: email,
+               password: password,
+               created_at: new Date()
+              }
+          console.log(`Data object: ${data}`);
+          this.user.username = "";
+          this.user.password = "";
+          this.user.email = "";
+          let self = this.state;
+          let acct = this.accountService;
+          console.log(`acct: ${acct}`);
+          acct.register(data).then(function(){
+            self.go('StudentDisplay')}, function(err){
+              alert(err);
+          });
+
+        }
+
+        constructor($http: ng.IHttpService, accountService: MyApp.Services.AccountService,  $state: ng.ui.IStateProvider){
+          this.http = $http;
+          this.state = $state;
+          this.accountService = accountService;
+          let self = this;
+          this.message = "This is the registration form";
+        }
+    }
+    angular.module("MyApp").controller('RegistrationController', RegistrationController);
+
+    export class StudentDisplayController {
+        public message;
+        public user;
+
+        constructor(accountService: MyApp.Services.AccountService, $http: ng.IHttpService){
+          this.message = "This is the student display controller";
+          $http.get('/profile', {
+            headers: {
+              Authorization: 'Bearer '+ accountService.getToken()
+            }
+          }).then((response) => {
+              this.user = response.data;
+              console.log(`Student Display this.user: ${JSON.stringify(this.user)}`);
+              if(this.user.avatar){
+                this.user.avatar = this.user.avatar.substring(6,this.user.avatar.length);
+                this.user.avatar = "https://s."+this.user.avatar+"?s=100&r=x&d=retro";
+                console.log(`avatar: ${this.user.avatar}`);
+              }
+            });
+        }
+      }
+
+      angular.module('MyApp').controller('StudentDisplayController', StudentDisplayController);
+
+    export class AdminListController {
+        public message;
+        public users;
+
+        constructor(accountService: MyApp.Services.AccountService, $http: ng.IHttpService){
+          this.message = "This is the admin list controller";
+          $http.get('/admin', {
+            headers: {
+              Authorization: 'Bearer '+ accountService.getToken()
+            }
+          }).then((response) => {
+              this.users = response.data;
+              console.log(`this.users: ${JSON.stringify(this.users)}`);
+              // using map to alter all the avatars
+              this.users = this.users.map(function(ava){
+                if(ava.avatar){
+                  ava.avatar=ava.avatar.substring(6,ava.avatar.length);
+                  ava.avatar = "https://s."+ava.avatar+"?s=100&r=x&d=retro";
+                }
+                return ava;
+              })
+            });
+        }
+      }
+
+      angular.module('MyApp').controller('AdminListController', AdminListController);
+
+      export class ForgotController {
           public message;
           public http;
           public user;
           public state;
           public accountService;
 
-          newUser(){
+          forgotPass(){
             console.log(`newUser() this.accountService: ${this.accountService}`);
             this.message = "Submited";
-            let username = this.user.username;
             let email = this.user.email;
             let password = this.user.password;
-            console.log(`Username: ${username}`);
             console.log(`Email: ${email}`);
             console.log(`Password: ${password}`);
-            console.log(`newUser() this.state: ${this.state}`);
+            console.log(`loginUser() this.state: ${this.state}`);
             let data = {
-                 username: username,
-                 email: email,
-                 password: password,
-                 status: 'student',
-                 practiceTests: {},
-                 created_at: new Date()
+                 email: email
                 }
             console.log(`Data object: ${data}`);
-            let self = this.state;
+            this.user.email = "";
+            let self = this;
             let acct = this.accountService;
             console.log(`acct: ${acct}`);
-            this.http.post("/v1/api/Register", data).success(function(data,status){
-              console.log(data);
-              console.log(`Email: ${email}`);
-              console.log(`Password1: ${password}`);
-              let data1 = {
-                   email: email,
-                   password: password,
-                   created_at: new Date()
-                  }
-              console.log(data1);
-              acct.login(data1);
-              self.go('Index');
+            acct.forgot(data).then(function(){
+              console.log(`data: ${JSON.stringify(data)}`);
+              var messContent = 'An e-mail has been sent to ' + data.email + ' with further instructions.';
+              self.message = messContent;
+              // self.state.go('Index');
+            }, function(err){
+              alert(JSON.stringify(err));
             });
 
           }
@@ -874,26 +925,60 @@ export class QuestionFormController {
             this.state = $state;
             this.accountService = accountService;
             let self = this;
-            // console.log(`$http: ${$http}`);
-            // console.log(`this.http: ${this.http}`);
-            // console.log(`$state: ${$state}`);
-            // console.log(`this.state: ${this.state}`);
-            this.message = "This is the registration form";
+            this.message = "This is the forgot form";
           }
-      }
-      angular.module("MyApp").controller('RegistrationController', RegistrationController);
-
-      export class StudentDisplayController {
-        public message;
-        public user;
-
-        constructor(accountService: MyApp.Services.AccountService){
-          this.message = "This is the student display controller";
-          this.user = accountService.currentUser();
         }
-      }
 
-      angular.module('MyApp').controller('StudentDisplayController', StudentDisplayController);
+        angular.module('MyApp').controller('ForgotController', ForgotController);
+
+        export class ResetController {
+          public message;
+          public http;
+          public token;
+          public password;
+          public state;
+          public accountService;
+          public confirm;
+
+          updatePassword(){
+            console.log(`updatePassword() this.accountService: ${this.accountService}`);
+            this.message = "Submited";
+            let password = this.password;
+            let confirm = this.confirm;
+            console.log(`this.token: ${JSON.stringify(this.token)}`);
+            console.log(`Password: ${password}`);
+            console.log(`Confirm: ${confirm}`);
+            let data = {
+                 password: password,
+                 token: this.token['token']
+                }
+            console.log(`Data object: ${JSON.stringify(data)}`);
+            this.password = "";
+            this.confirm = "";
+            let self = this;
+            let acct = this.accountService;
+            acct.reset(data).then(function(){
+              console.log(`data: ${JSON.stringify(data)}`);
+              self.message = "Password updated."
+              // self.state.go('Login');
+            }, function(err){
+              alert(JSON.stringify(err));
+            });
+
+          }
+
+          constructor($http: ng.IHttpService, accountService: MyApp.Services.AccountService,  $state: ng.ui.IStateProvider, $stateParams: ng.ui.IStateParamsService){
+            this.http = $http;
+            this.state = $state;
+            this.token = $stateParams;
+            this.accountService = accountService;
+            let self = this;
+            this.message = "This is the reset form";
+          }
+        }
+
+        angular.module('MyApp').controller('ResetController', ResetController);
+
 
       export class NavigationController {
 
@@ -921,18 +1006,32 @@ export class QuestionFormController {
 
           constructor(accountService: MyApp.Services.AccountService, $rootScope: ng.IRootScopeService, $state: ng.ui.IStateProvider, private $uibModal: angular.ui.bootstrap.IModalService){
 
+            this.acct = accountService;
+            this.state = $state;
             this.isLoggedIn = accountService.isLoggedIn();
-            this.isAdmin = accountService.isAdmin();
+            if(this.isLoggedIn){
+              this.currentUser = accountService.currentUser();
+              if(this.currentUser.avatar){
+                this.currentUser.avatar = this.currentUser.avatar.substring(6,this.currentUser.avatar.length);
+                this.currentUser.avatar = "https://s."+this.currentUser.avatar+"?s=30&r=x&d=retro";
+                console.log(`avatar: ${this.currentUser.avatar}`);
+              }
+              this.isAdmin = accountService.isAdmin();
+            }
             $rootScope.$on('navUpdate',()=>{
               console.log('navUpdated');
               this.isLoggedIn = accountService.isLoggedIn();
-              this.currentUser = accountService.currentUser();
-              this.isAdmin = accountService.isAdmin();
-            })
-            console.log(`this.isLoggedIn`)
-            this.currentUser = accountService.currentUser();
-            this.acct = accountService;
-            this.state = $state;
+              if(this.isLoggedIn){
+                this.currentUser = accountService.currentUser();
+                if(this.currentUser.avatar){
+                  this.currentUser.avatar = this.currentUser.avatar.substring(6,this.currentUser.avatar.length);
+                  this.currentUser.avatar = "https://s."+this.currentUser.avatar+"?s=30&r=x&d=retro";
+                  console.log(`avatar: ${this.currentUser.avatar}`);
+                }
+                this.isAdmin = accountService.isAdmin();
+              }
+
+            });
           }
         }
 

@@ -1,0 +1,16 @@
+<br><br><br><br>
+<h1>Reset Page</h1>
+<p>{{vm.message}}</p>
+<div class="container center">
+<form class="update_form" name="update_form" ng-submit="vm.updatePassword()">
+  <label for="password">New Password:</label>
+  <br>
+  <input type="password" ng-model="vm.password" name="password" size="50" placeholder="New Password">
+  <br><br>
+  <label for="password">Confirm Password:</label>
+  <br>
+  <input type="password" ng-model="vm.confirm" name="confirm" size="50" placeholder="Confirm Password">
+  <br><br>
+  <input class="btn btn-primary" type="submit" name="submit" value="Update Password">
+</form>
+</div>

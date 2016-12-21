@@ -35,6 +35,15 @@ namespace MyApp {
               controller: MyApp.Controllers.TestRandomizerController,
               controllerAs: 'vm'
           })
+          .state('AdminList', {
+              url: '/adminList',
+              templateUrl: "/templates/adminList.html",
+              data: {
+                requiresAdmin: true
+              },
+              controller: MyApp.Controllers.AdminListController,
+              controllerAs: 'vm'
+          })
           .state('Login', {
               url: '/login',
               templateUrl: "/templates/login.html",
@@ -54,6 +63,18 @@ namespace MyApp {
               url: '/register',
               templateUrl: "/templates/register.html",
               controller: MyApp.Controllers.RegistrationController,
+              controllerAs: 'vm'
+          })
+          .state('Reset', {
+              url: '/reset/:token',
+              templateUrl: "/templates/reset.html",
+              controller: MyApp.Controllers.ResetController,
+              controllerAs: 'vm'
+          })
+          .state('Forgot', {
+              url: '/forgot',
+              templateUrl: "/templates/forgot.html",
+              controller: MyApp.Controllers.ForgotController,
               controllerAs: 'vm'
           })
           .state('QuestionForm', {

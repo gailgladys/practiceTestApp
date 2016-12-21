@@ -12,8 +12,10 @@ module.exports.profileRead = function(req, res) {
     // Otherwise continue
     User
       .findById(req.payload._id)
-      .exec(function(err, user) {
-        res.status(200).json(user);
+      .select('-passwordHash -salt')
+      .exec(function(err, result) {
+        console.log(`result: ${result}`);
+        res.status(200).json(result);
       });
   }
 

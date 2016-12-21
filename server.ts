@@ -4,14 +4,17 @@ import bodyParser = require('body-parser');
 import logger = require('morgan');
 import favicon = require('serve-favicon');
 import passport = require("passport");
-import flash = require('connect-flash');
+// import flash = require('connect-flash');
 import cookieParser = require('cookie-parser');
 import cookieSession = require('cookie-session');
 import session = require('express-session');
 import csrf = require('csurf');
 import methodOverride = require('method-override');
+var gravatar = require('gravatar');
 
 require('./app_api/models/user');
+require('./app_api/models/question');
+require('./app_api/models/exam');
 require('./app_api/config/passport');
 
 let routes = require('./app_api/routes/index');
@@ -55,18 +58,35 @@ let mongoose = require('mongoose');
 mongoose.connect(process.env.MONGOLAB_URI16);
 
 // Connect flash
-app.use(flash());
+// app.use(flash());
 
 //Global Vars
-app.use(function(req,res,next){
-  res.locals.success_msg = req.flash('success_msg');
-  res.locals.error_msg = req.flash('error_msg');
-  res.locals.error = req.flash('error');
-  res.locals.user = req.user || null;
-  next();
-});
+// app.use(function(req,res,next){
+  // res.locals.success_msg = req.flash('success_msg');
+  // res.locals.error_msg = req.flash('error_msg');
+  // res.locals.error = req.flash('error');
+  // res.locals.user = req.user || null;
+  // next();
+// });
 
 app.use('/', routes);
+
+// catch 404 and forward to error handler
+app.use(function(req, res, next) {
+    var err = new Error('Not Found');
+    err.status = 404;
+    next(err);
+});
+
+// error handlers
+
+// [SH] Catch unauthorised errors
+app.use(function(err, req, res, next) {
+  if (err.name === 'UnauthorizedError') {
+    res.status(401);
+    res.json({"message" : err.name + ": " + err.message});
+  }
+});
 
 let server = app.listen(3000, 'localhost', function () {
   let host = server.address().address;

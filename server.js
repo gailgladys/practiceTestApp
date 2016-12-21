@@ -5,12 +5,14 @@ var bodyParser = require("body-parser");
 var logger = require("morgan");
 var favicon = require("serve-favicon");
 var passport = require("passport");
-var flash = require("connect-flash");
 var cookieParser = require("cookie-parser");
 var session = require("express-session");
 var csrf = require("csurf");
 var methodOverride = require("method-override");
+var gravatar = require('gravatar');
 require('./app_api/models/user');
+require('./app_api/models/question');
+require('./app_api/models/exam');
 require('./app_api/config/passport');
 var routes = require('./app_api/routes/index');
 var app = express();
@@ -44,15 +46,18 @@ app.use(passport.initialize());
 app.use(passport.session());
 var mongoose = require('mongoose');
 mongoose.connect(process.env.MONGOLAB_URI16);
-app.use(flash());
-app.use(function (req, res, next) {
-    res.locals.success_msg = req.flash('success_msg');
-    res.locals.error_msg = req.flash('error_msg');
-    res.locals.error = req.flash('error');
-    res.locals.user = req.user || null;
-    next();
-});
 app.use('/', routes);
+app.use(function (req, res, next) {
+    var err = new Error('Not Found');
+    err.status = 404;
+    next(err);
+});
+app.use(function (err, req, res, next) {
+    if (err.name === 'UnauthorizedError') {
+        res.status(401);
+        res.json({ "message": err.name + ": " + err.message });
+    }
+});
 var server = app.listen(3000, 'localhost', function () {
     var host = server.address().address;
     var port = server.address().port;

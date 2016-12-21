@@ -8,6 +8,9 @@ var userSchema = new mongoose.Schema({
     passwordHash: String,
     salt: String,
     role: String,
+    avatar: String,
+    resetPasswordToken: String,
+    resetPasswordExpires: Date,
     practiceTests: Object,
     grades: Object,
     examsAvailable: Array,
@@ -29,12 +32,13 @@ userSchema.method('generateJwt', function () {
     console.log("expiry: " + expiry);
     console.log("expiry.getTime(): " + expiry.getTime());
     return jwt.sign({
-        id: this._id,
+        _id: this._id,
         username: this.username,
         email: this.email,
         role: this.role,
+        avatar: this.avatar,
         exp: parseInt(expiry.getTime() / 1000),
-    }, 'SecretKey');
+    }, "MY_SECRET");
 });
 var User = mongoose.model('User', userSchema);
 module.exports = User;

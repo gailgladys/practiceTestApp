@@ -1,5 +1,4 @@
-// /models/exam.js
-var mongoose = require('mongoose');
+import mongoose = require('mongoose');
 
 var examSchema = new mongoose.Schema({
   examAvailable: Array,

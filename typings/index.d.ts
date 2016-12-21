@@ -21,6 +21,7 @@
 /// <reference path="globals/serve-favicon/index.d.ts" />
 /// <reference path="globals/serve-static/index.d.ts" />
 /// <reference path="globals/validator/index.d.ts" />
+/// <reference path="modules/async/index.d.ts" />
 /// <reference path="modules/crypto-js/index.d.ts" />
 /// <reference path="modules/jsonwebtoken/index.d.ts" />
 /// <reference path="modules/method-override/index.d.ts" />

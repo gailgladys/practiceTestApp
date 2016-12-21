@@ -25,6 +25,7 @@
     "validator": "registry:dt/validator#5.7.0+20161119044246"
   },
   "dependencies": {
+    "async": "registry:npm/async#2.0.1+20160815105832",
     "crypto-js": "registry:dt/crypto-js#3.1.4+20160727175746",
     "jsonwebtoken": "registry:dt/jsonwebtoken#7.1.6+20161128184045",
     "method-override": "registry:dt/method-override#0.0.0+20161118222135"
