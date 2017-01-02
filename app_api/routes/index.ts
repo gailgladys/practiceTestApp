@@ -11,12 +11,17 @@ var ctrlProfile = require('../controllers/profile');
 var ctrlAuth = require('../controllers/authentication');
 var ctrlAdmin = require('../controllers/admin');
 
-// profile
+// student
 router.get('/profile', auth, ctrlProfile.profileRead);
+router.get('/examBank', auth, ctrlProfile.examBank);
 
 // admin
 router.get('/admin', auth, ctrlAdmin.adminRead);
 router.get('/adminAssign', auth, ctrlAdmin.adminAssign);
+router.get('/adminExamAssign', auth, ctrlAdmin.adminExamAssign);
+router.get('/testBank', auth, ctrlAdmin.testBank);
+router.post('/questionData', auth, ctrlAdmin.questionData);
+
 
 //authentication
 router.post('/register', ctrlAuth.register);

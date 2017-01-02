@@ -19,6 +19,8 @@ var MyApp;
             };
             AccountService.prototype.logout = function () {
                 localStorage.removeItem('mean-token');
+                var token = localStorage.getItem('mean-token');
+                console.log("logout - token: " + token);
                 this.rootScope.$broadcast('navUpdate');
             };
             AccountService.prototype.isLoggedIn = function () {

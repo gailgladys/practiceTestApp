@@ -21,7 +21,7 @@
     </div>
     <div ng-hide="vm.submitted" ng-show="vm.message == 'Good Luck!'" class="row">
       <h2 style="text-align:center;">{{vm.message}}</h2>
-      <timer ng-if="vm.message == 'Good Luck!'"  finish-callback="vm.submitExam('outoftime')" countdown="10" interval="1000">{{minutes}} minute{{minutesS}}, {{seconds}} second{{secondsS}}.</timer>
+      <timer ng-if="vm.message == 'Good Luck!'"  finish-callback="vm.submitExam('outoftime')" countdown="1800" interval="1000">{{minutes}} minute{{minutesS}}, {{seconds}} second{{secondsS}}.</timer>
       <div class="col-xs-3">
         <div class="row">
           <div ng-repeat="question in vm.questions" style="margin-top: 5px;" class="col-xs-6">

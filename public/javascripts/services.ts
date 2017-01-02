@@ -21,6 +21,8 @@ namespace MyApp.Services {
 
     logout(){
       localStorage.removeItem('mean-token');
+      let token = localStorage.getItem('mean-token');
+      console.log(`logout - token: ${token}`);
       this.rootScope.$broadcast('navUpdate');
     }
 

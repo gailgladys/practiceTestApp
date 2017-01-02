@@ -25,11 +25,19 @@ export class QuestionFormController {
       public examName;
       public displayExamName;
       public displayExamNum;
+      public accountService;
 
       enterExamNum(){
         let examNum = this.examNum;
         let self = this;
-        this.http.get('/testBank', {params: {examNum: this.examNum}}).then((response) => {
+        this.http.get('/testBank', {
+          params: {
+            examNum: this.examNum
+          },
+          headers: {
+            Authorization: 'Bearer '+ this.accountService.getToken()
+          }
+          }).then((response) => {
           console.log('response.data:');
           console.log(response.data);
           console.log(response.data.questions.length);
@@ -157,22 +165,28 @@ export class QuestionFormController {
         this.messageMin = "";
         let self = this;
 
-        this.http.post("/questionData", data).success(function(data, status) {
-            console.log(data);
-            self.counter=data.questionNum;
-            self.displayExamName=data.examName;
+        this.http.post('/questionData', data,
+          {
+          headers: {
+            Authorization: 'Bearer '+ this.accountService.getToken()
+          }
+          }).then((response) => {
+            console.log(response.data);
+            self.counter=response.data.questionNum;
+            self.displayExamName=response.data.examName;
             self.message = "Successfully entered question into database";
         });
 
         }
 
-      constructor(public $state: ng.ui.IStateService, $http: ng.IHttpService, $stateParams){
+      constructor(accountService: MyApp.Services.AccountService, public $state: ng.ui.IStateService, $http: ng.IHttpService, $stateParams){
         this.http = $http;
         var target = angular.element(document).find('#examNumInitial');
         target[0].focus();
         target[0].select();
         this.moreMessage = "";
         this.messageMin = "";
+        this.accountService = accountService;
       }
   }
 
@@ -185,10 +199,18 @@ export class QuestionFormController {
       public examName;
       public message;
       public displayExamNum;
+      public accountService;
 
       selectExamNum(){
         let self = this;
-        this.http.get('/testBank', {params: {examNum: this.examNum}}).then((response) => {
+        this.http.get('/testBank', {
+          params: {
+            examNum: this.examNum
+          },
+          headers: {
+            Authorization: 'Bearer '+ this.accountService.getToken()
+          }
+          }).then((response) => {
           console.log('response.data:');
           console.log(response.data);
           if (response.data){
@@ -203,8 +225,9 @@ export class QuestionFormController {
         });
       }
 
-      constructor(public $state: ng.ui.IStateService, $http: ng.IHttpService,$stateParams){
+      constructor(accountService: MyApp.Services.AccountService, public $state: ng.ui.IStateService, $http: ng.IHttpService,$stateParams){
         this.http = $http;
+        this.accountService = accountService;
 
       }
   }
@@ -302,6 +325,7 @@ export class QuestionFormController {
       public examNameSelect;
       public subexamSelect;
       public elapsedTime;
+      public accountService;
 
       pageChanged(){
         this.log.log('Page changed to: '+ this.currentPage);
@@ -314,14 +338,18 @@ export class QuestionFormController {
       }
 
       selectExam(exam,subexam){
-        console.log('Exam: ',exam,' Subexam: ',subexam);
         this.examSelect = exam;
         this.subexamSelect = subexam;
         this.examNameSelect = this.student.examNames[exam];
         let self = this;
-        this.http.get('/examBank', {params: {questArray: this.student.practiceTests[exam][subexam]}}).then((response) => {
-          console.log('response.data:');
-          console.log(response.data);
+        this.http.get('/examBank', {
+          params: {
+            questArray: this.student.practiceTests[exam][subexam]
+          },
+          headers: {
+            Authorization: 'Bearer '+ this.accountService.getToken()
+          }
+          }).then((response) => {
           if (response.data.length){
             this.totalItems = response.data.length;
             self.message = "Good Luck!";
@@ -333,46 +361,19 @@ export class QuestionFormController {
         });
       }
 
-      selectExamNum(){
-        let self = this;
-        this.http.get('/testBank', {params: {examNum: this.examNum}}).then((response) => {
-          console.log('response.data:');
-          console.log(response.data);
-          if (response.data.length){
-            self.message = "Good Luck!";
-            this.questions = response.data;
-          } else {
-            this.questions = "";
-            self.message = "No matches found for that exam number";
-          }
-        });
-      }
-
       enterAnswer1(questNum){
         // radio button one choice question
-        console.log(`questNum: ${questNum}`);
         let questArrayPos = parseInt(questNum);
-        console.log(`questArrayPos: ${questArrayPos}`);
         let tempAnswerArray = [];
         tempAnswerArray.push(this.studentAnswer[questArrayPos]);
         if (tempAnswerArray.length>0){
           this.answers[questArrayPos]=tempAnswerArray;
-          console.log(this.answers);
         }
       }
 
       enterAnswer2(questNum,id,letterSelected){
-        console.log(`this.studentAnswerA[questArrayPos]: ${this.studentAnswerA[questArrayPos]}`);
         // checkbox two choice question
-        console.log(`questNum: ${questNum}`);
         let questArrayPos = parseInt(questNum);
-        console.log(`questArrayPos: ${questArrayPos}`);
-        console.log(`id: ${id}`);
-        console.log(`this.studentAnswerA[questArrayPos]: ${this.studentAnswerA[questArrayPos]}`);
-        console.log(`this.studentAnswerB[questArrayPos]: ${this.studentAnswerB[questArrayPos]}`);
-        console.log(`this.studentAnswerC[questArrayPos]: ${this.studentAnswerC[questArrayPos]}`);
-        console.log(`this.studentAnswerD[questArrayPos]: ${this.studentAnswerD[questArrayPos]}`);
-        console.log(`this.studentAnswerE[questArrayPos]: ${this.studentAnswerE[questArrayPos]}`);
         this.moreMessage = "";
         this.messageMin = "";
         let numCheck = 0;
@@ -397,11 +398,8 @@ export class QuestionFormController {
           tempAnswerArray.push("E");
           numCheck++;
         }
-        console.log(`numCheck: ${numCheck}`);
-        console.log(`tempAnswerArray.length: ${tempAnswerArray.length}`);
         if (tempAnswerArray.length>2){
           var test = document.getElementsByClassName('selectTwoQuest');
-          console.log(`test: ${test[id].checked}`);
           test[id].checked = false;
           switch(letterSelected) {
             case "A":
@@ -425,12 +423,10 @@ export class QuestionFormController {
           this.answers[questArrayPos]=tempAnswerArray;
           this.messageMin = "You need to select two answers!";
           this.needTwo[questArrayPos]=true;
-          console.log(this.answers);
         } else if (tempAnswerArray.length==2){
           this.answers[questArrayPos]=tempAnswerArray;
           this.messageMin = "";
           this.needTwo[questArrayPos] = false;
-          console.log(this.answers);
         } else {
           this.answers[questArrayPos] = "";
           this.messageMin = "You need to select an answer!";
@@ -439,33 +435,22 @@ export class QuestionFormController {
 
       submitExam(out){
         this.$scope.$broadcast('timer-stop');
-        // this.$scope.$apply();
-        console.log('exam submitted');
-        // this.submitted = true;
         let self = this;
-        // self.submitted = true;
         let unansweredArray = [];
         let gradeArray = [];
         let submitExamQuest = this.questions;
-        console.log(this.answers);
-        console.log(this.answers.length);
         for(let i=0;i<this.questions.length;i++){
           if(this.answers[i]){
-            console.log(this.answers[i]);
             if(this.questions[i].selectTwo != "Y"){
               if(this.questions[i].correctAnswer[0]==this.answers[i][0]){
-                console.log(`You got question #${i+1} right!`)
                 gradeArray[i]="Right";
               } else {
-                console.log(`You got question #${i+1} wrong!`)
                 gradeArray[i]="Wrong";
               }
             } else {
               if(this.questions[i].correctAnswer[0]==this.answers[i][0]&&this.questions[i].correctAnswer[1]==this.answers[i][1]){
-                console.log(`You got question #${i+1} right!`)
                 gradeArray[i]="Right";
               } else {
-                console.log(`You got question #${i+1} wrong!`)
                 gradeArray[i]="Wrong";
               }
             }
@@ -476,20 +461,15 @@ export class QuestionFormController {
         }
         if(unansweredArray.length>0 && out!='outoftime'){
           let yn = confirm('You have not answered all the questions. Are you sure you want to submit?');
-          console.log(`yn: ${yn}`);
           if (yn==true){
-            console.log(`yn - should be true: ${yn}`);
             gradeExam();
           } else {
-            console.log(`yn - should be false: ${yn}`);
             self.$scope.$broadcast('timer-start');
           }
         } else {
           gradeExam();
         }
         function gradeExam(){
-          console.log('gradeExam() called');
-          console.log(`gradeArray: ${gradeArray}`);
           if(unansweredArray.length>0){
             self.message2=`You didn't answer the following questions: ${unansweredArray}. Grading commencing....`;
           } else {
@@ -497,7 +477,6 @@ export class QuestionFormController {
           }
           let string = "";
           let numRight = 0;
-          console.log(submitExamQuest.length);
           for(let j=0;j<submitExamQuest.length;j++){
             string+="Question #"+(j+1)+" is "+gradeArray[j]+"! ";
             if(gradeArray[j]=="Right"){
@@ -506,9 +485,7 @@ export class QuestionFormController {
           }
           self.submitted = true;
           let finalGrade = Math.round(numRight/submitExamQuest.length*100);
-          console.log(finalGrade);
           self.message4 = `Your grade is ${finalGrade}%`;
-          console.log(string);
           self.message3 = string;
           if(out=="outoftime"){
             self.message5 = "You ran out of time!";
@@ -525,12 +502,9 @@ export class QuestionFormController {
           }
         }).then((response) => {
             this.student = response.data;
-            console.log(`this.student: ${JSON.stringify(this.student)}`);
             var avatar = this.student.avatar;
-            console.log(`avatar: ${avatar}`);
             this.student.avatar = this.student.avatar.substring(6,this.student.avatar.length);
             this.student.avatar = "https://s."+this.student.avatar+"?s=100&r=x&d=retro";
-            console.log(`avatar: ${this.student.avatar}`);
             this.examsAvailable = this.student.examsAvailable;
             this.message = "";
           });
@@ -550,11 +524,12 @@ export class QuestionFormController {
         this.answers = [];
         this.needTwo = [];
         this.submitted = false;
+        this.accountService = accountService;
         this.elapsedTime = 0;
         this.$scope.$on('timer-tick', (event: ng.IAngularEvent, data: number) => {
-            console.log(`event.name = ${event.name}, timeoutId = ${data.timeoutId}, millis = ${data.millis}\n`);
+            // console.log(`event.name = ${event.name}, timeoutId = ${data.timeoutId}, millis = ${data.millis}\n`);
             this.elapsedTime++
-            console.log(`this.elapsedTime: ${this.elapsedTime}`);
+            // console.log(`this.elapsedTime: ${this.elapsedTime}`);
         });
       }
   }
@@ -566,12 +541,23 @@ export class QuestionFormController {
       public http;
       public message;
       public examsAvailable;
+      public accountService;
 
       assignExam(student,examNum,index) {
         console.log(`index: ${index}`);
-        console.log(`this.students[index]: ${this.students[index]}`);
+        console.log(`this.students[index]: ${JSON.stringify(this.students[index])}`);
         let examName = this.examsAvailable[0].examNames[examNum];
-        this.http.get('/adminExamAssign', {params: {examNum: examNum, examName: examName, student: student}}).then((response) => {
+        console.log(`examName: ${examName}`);
+        this.http.get('/adminExamAssign', {
+          params: {
+            examNum: examNum,
+            examName: examName,
+            student: student
+          },
+          headers: {
+            Authorization: 'Bearer '+ this.accountService.getToken()
+          }
+        }).then((response) => {
           this.message = 'success';
           console.log(`response.data: ${response.data}`);
           console.log(`JSON.stringify(response.data): ${JSON.stringify(response.data)}`);
@@ -600,20 +586,10 @@ export class QuestionFormController {
             this.examsAvailable = response.data['exams'];
             console.log(`this.examsAvailable: ${JSON.stringify(this.examsAvailable)}`);
           });
+          this.accountService = accountService;
+          this.http = $http;
         }
-}
-
-      //
-      //   $http.get('/admin').then((response) => {
-      //     this.students = response.data;
-      //     console.log(`this.students: ${JSON.stringify(this.students)}`);
-      //     $http.get('/examsAvailable').then((response) => {
-      //       this.examsAvailable = response.data;
-      //       console.log(`response.data: ${response.data}`);
-      //     });
-      //   });
-      //   this.http = $http;
-      // }
+  }
 
 
   angular.module("MyApp").controller('AdminController', AdminController);
@@ -1021,6 +997,9 @@ export class QuestionFormController {
             $rootScope.$on('navUpdate',()=>{
               console.log('navUpdated');
               this.isLoggedIn = accountService.isLoggedIn();
+              console.log(`this.isLoggedIn: ${this.isLoggedIn}`);
+              this.isAdmin = accountService.isAdmin();
+              console.log(`this.isAdmin: ${this.isAdmin}`);
               if(this.isLoggedIn){
                 this.currentUser = accountService.currentUser();
                 if(this.currentUser.avatar){
@@ -1028,7 +1007,6 @@ export class QuestionFormController {
                   this.currentUser.avatar = "https://s."+this.currentUser.avatar+"?s=30&r=x&d=retro";
                   console.log(`avatar: ${this.currentUser.avatar}`);
                 }
-                this.isAdmin = accountService.isAdmin();
               }
 
             });

@@ -23,21 +23,21 @@
         </div>
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
           <ul class="nav navbar-nav">
-            <li ng-show="navCtrl.isLoggedIn"><a uib-btn ui-sref="StudentDisplay">Student Display</a></li>
-            <li ng-show="navCtrl.isAdmin"><a uib-btn ui-sref="QuestionForm">New Questions</a></li>
-            <li ng-show="navCtrl.isAdmin"><a uib-btn ui-sref="TestBank">Test Bank</a></li>
-            <li ng-show="navCtrl.isLoggedIn"><a uib-btn ui-sref="PracticeTest">Practice Test</a></li>
-            <li ng-show="navCtrl.isAdmin"><a uib-btn ui-sref="Admin">Admin</a></li>
-            <li ng-show="navCtrl.isAdmin"><a uib-btn ui-sref="AdminList">Admin List</a></li>
-            <li ng-show="navCtrl.isAdmin"><a uib-btn ui-sref="TestArray">Test Array</a></li>
-            <li ng-show="navCtrl.isAdmin"><a uib-btn ui-sref="TestRandomizer">Test Randomizer</a></li>
+            <li ng-cloak ng-show="navCtrl.isLoggedIn"><a uib-btn ui-sref="StudentDisplay">Student Display</a></li>
+            <li ng-cloak ng-show="navCtrl.isAdmin"><a uib-btn ui-sref="QuestionForm">New Questions</a></li>
+            <li ng-cloak ng-show="navCtrl.isAdmin"><a uib-btn ui-sref="TestBank">Test Bank</a></li>
+            <li ng-cloak ng-show="navCtrl.isLoggedIn"><a uib-btn ui-sref="PracticeTest">Practice Test</a></li>
+            <li ng-cloak ng-show="navCtrl.isAdmin"><a uib-btn ui-sref="Admin">Admin</a></li>
+            <li ng-cloak ng-show="navCtrl.isAdmin"><a uib-btn ui-sref="AdminList">Admin List</a></li>
+            <li ng-cloak ng-show="navCtrl.isAdmin"><a uib-btn ui-sref="TestArray">Test Array</a></li>
+            <li ng-cloak ng-show="navCtrl.isAdmin"><a uib-btn ui-sref="TestRandomizer">Test Randomizer</a></li>
           </ul>
 
           <ul class="nav navbar-nav navbar-right">
-            <li id="navLoginName" ng-show="navCtrl.isLoggedIn"><span class="label" data-ng-class="{&quot;label-info&quot;: navCtrl.currentUser.role == 'student', &quot;label-success&quot;: navCtrl.currentUser.role == 'admin'}">{{ navCtrl.currentUser.role }}</span>&nbsp<img style="height: 30px;" src="{{navCtrl.currentUser.avatar}}" alt="avatar">&nbsp{{navCtrl.currentUser.name}}&nbsp&nbsp</li>
-            <li ng-hide="navCtrl.isLoggedIn"><button class="btn btn-primary" id="log_in" ng-click="navCtrl.showModal()"><span class="glyphicon glyphicon-log-in" aria-hidden="true"></span>&nbsp;&nbsp;Sign in</button></li>
+            <li ng-cloak id="navLoginName" ng-show="navCtrl.isLoggedIn"><span class="label" data-ng-class="{&quot;label-info&quot;: navCtrl.currentUser.role == 'student', &quot;label-success&quot;: navCtrl.currentUser.role == 'admin'}">{{ navCtrl.currentUser.role }}</span>&nbsp<img style="height: 30px;" src="{{navCtrl.currentUser.avatar}}" alt="avatar">&nbsp{{navCtrl.currentUser.name}}&nbsp&nbsp</li>
+            <li ng-cloak ng-hide="navCtrl.isLoggedIn"><button class="btn btn-primary" id="log_in" ng-click="navCtrl.showModal()"><span class="glyphicon glyphicon-log-in" aria-hidden="true"></span>&nbsp;&nbsp;Sign in</button></li>
             <!-- <li ng-hide="navCtrl.isLoggedIn"><a uib-btn ui-sref="Register">Register</a></li> -->
-            <li ng-show="navCtrl.isLoggedIn"><button class="btn btn-warning" ng-click="navCtrl.logout()" id="log_out">Log out</button></li>
+            <li ng-cloak ng-show="navCtrl.isLoggedIn"><button class="btn btn-warning" ng-click="navCtrl.logout()" id="log_out">Log out</button></li>
             <!-- <li>
               <button ng-show="!main.login()" class="btn btn-primary" id="log_in" ng-click="main.showModal()"><span class="glyphicon glyphicon-log-in" aria-hidden="true"></span>&nbsp;&nbsp;Sign in</button>
               <button ng-show="main.login()" ng-click="main.logout()" class="btn btn-warning" id="log_in">Log out</button>

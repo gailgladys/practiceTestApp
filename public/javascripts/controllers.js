@@ -12,7 +12,7 @@ var MyApp;
         Controllers.MainController = MainController;
         angular.module('MyApp').controller('MainController', MainController);
         var QuestionFormController = (function () {
-            function QuestionFormController($state, $http, $stateParams) {
+            function QuestionFormController(accountService, $state, $http, $stateParams) {
                 this.$state = $state;
                 this.http = $http;
                 var target = angular.element(document).find('#examNumInitial');
@@ -20,12 +20,20 @@ var MyApp;
                 target[0].select();
                 this.moreMessage = "";
                 this.messageMin = "";
+                this.accountService = accountService;
             }
             QuestionFormController.prototype.enterExamNum = function () {
                 var _this = this;
                 var examNum = this.examNum;
                 var self = this;
-                this.http.get('/testBank', { params: { examNum: this.examNum } }).then(function (response) {
+                this.http.get('/testBank', {
+                    params: {
+                        examNum: this.examNum
+                    },
+                    headers: {
+                        Authorization: 'Bearer ' + this.accountService.getToken()
+                    }
+                }).then(function (response) {
                     console.log('response.data:');
                     console.log(response.data);
                     console.log(response.data.questions.length);
@@ -151,10 +159,14 @@ var MyApp;
                 this.moreMessage = "";
                 this.messageMin = "";
                 var self = this;
-                this.http.post("/questionData", data).success(function (data, status) {
-                    console.log(data);
-                    self.counter = data.questionNum;
-                    self.displayExamName = data.examName;
+                this.http.post('/questionData', data, {
+                    headers: {
+                        Authorization: 'Bearer ' + this.accountService.getToken()
+                    }
+                }).then(function (response) {
+                    console.log(response.data);
+                    self.counter = response.data.questionNum;
+                    self.displayExamName = response.data.examName;
                     self.message = "Successfully entered question into database";
                 });
             };
@@ -163,14 +175,22 @@ var MyApp;
         Controllers.QuestionFormController = QuestionFormController;
         angular.module("MyApp").controller('QuestionFormController', QuestionFormController);
         var TestBankController = (function () {
-            function TestBankController($state, $http, $stateParams) {
+            function TestBankController(accountService, $state, $http, $stateParams) {
                 this.$state = $state;
                 this.http = $http;
+                this.accountService = accountService;
             }
             TestBankController.prototype.selectExamNum = function () {
                 var _this = this;
                 var self = this;
-                this.http.get('/testBank', { params: { examNum: this.examNum } }).then(function (response) {
+                this.http.get('/testBank', {
+                    params: {
+                        examNum: this.examNum
+                    },
+                    headers: {
+                        Authorization: 'Bearer ' + this.accountService.getToken()
+                    }
+                }).then(function (response) {
                     console.log('response.data:');
                     console.log(response.data);
                     if (response.data) {
@@ -252,12 +272,9 @@ var MyApp;
                     }
                 }).then(function (response) {
                     _this.student = response.data;
-                    console.log("this.student: " + JSON.stringify(_this.student));
                     var avatar = _this.student.avatar;
-                    console.log("avatar: " + avatar);
                     _this.student.avatar = _this.student.avatar.substring(6, _this.student.avatar.length);
                     _this.student.avatar = "https://s." + _this.student.avatar + "?s=100&r=x&d=retro";
-                    console.log("avatar: " + _this.student.avatar);
                     _this.examsAvailable = _this.student.examsAvailable;
                     _this.message = "";
                 });
@@ -277,11 +294,10 @@ var MyApp;
                 this.answers = [];
                 this.needTwo = [];
                 this.submitted = false;
+                this.accountService = accountService;
                 this.elapsedTime = 0;
                 this.$scope.$on('timer-tick', function (event, data) {
-                    console.log("event.name = " + event.name + ", timeoutId = " + data.timeoutId + ", millis = " + data.millis + "\n");
                     _this.elapsedTime++;
-                    console.log("this.elapsedTime: " + _this.elapsedTime);
                 });
             }
             PracticeTestController.prototype.pageChanged = function () {
@@ -294,14 +310,18 @@ var MyApp;
             };
             PracticeTestController.prototype.selectExam = function (exam, subexam) {
                 var _this = this;
-                console.log('Exam: ', exam, ' Subexam: ', subexam);
                 this.examSelect = exam;
                 this.subexamSelect = subexam;
                 this.examNameSelect = this.student.examNames[exam];
                 var self = this;
-                this.http.get('/examBank', { params: { questArray: this.student.practiceTests[exam][subexam] } }).then(function (response) {
-                    console.log('response.data:');
-                    console.log(response.data);
+                this.http.get('/examBank', {
+                    params: {
+                        questArray: this.student.practiceTests[exam][subexam]
+                    },
+                    headers: {
+                        Authorization: 'Bearer ' + this.accountService.getToken()
+                    }
+                }).then(function (response) {
                     if (response.data.length) {
                         _this.totalItems = response.data.length;
                         self.message = "Good Luck!";
@@ -313,44 +333,16 @@ var MyApp;
                     }
                 });
             };
-            PracticeTestController.prototype.selectExamNum = function () {
-                var _this = this;
-                var self = this;
-                this.http.get('/testBank', { params: { examNum: this.examNum } }).then(function (response) {
-                    console.log('response.data:');
-                    console.log(response.data);
-                    if (response.data.length) {
-                        self.message = "Good Luck!";
-                        _this.questions = response.data;
-                    }
-                    else {
-                        _this.questions = "";
-                        self.message = "No matches found for that exam number";
-                    }
-                });
-            };
             PracticeTestController.prototype.enterAnswer1 = function (questNum) {
-                console.log("questNum: " + questNum);
                 var questArrayPos = parseInt(questNum);
-                console.log("questArrayPos: " + questArrayPos);
                 var tempAnswerArray = [];
                 tempAnswerArray.push(this.studentAnswer[questArrayPos]);
                 if (tempAnswerArray.length > 0) {
                     this.answers[questArrayPos] = tempAnswerArray;
-                    console.log(this.answers);
                 }
             };
             PracticeTestController.prototype.enterAnswer2 = function (questNum, id, letterSelected) {
-                console.log("this.studentAnswerA[questArrayPos]: " + this.studentAnswerA[questArrayPos]);
-                console.log("questNum: " + questNum);
                 var questArrayPos = parseInt(questNum);
-                console.log("questArrayPos: " + questArrayPos);
-                console.log("id: " + id);
-                console.log("this.studentAnswerA[questArrayPos]: " + this.studentAnswerA[questArrayPos]);
-                console.log("this.studentAnswerB[questArrayPos]: " + this.studentAnswerB[questArrayPos]);
-                console.log("this.studentAnswerC[questArrayPos]: " + this.studentAnswerC[questArrayPos]);
-                console.log("this.studentAnswerD[questArrayPos]: " + this.studentAnswerD[questArrayPos]);
-                console.log("this.studentAnswerE[questArrayPos]: " + this.studentAnswerE[questArrayPos]);
                 this.moreMessage = "";
                 this.messageMin = "";
                 var numCheck = 0;
@@ -375,11 +367,8 @@ var MyApp;
                     tempAnswerArray.push("E");
                     numCheck++;
                 }
-                console.log("numCheck: " + numCheck);
-                console.log("tempAnswerArray.length: " + tempAnswerArray.length);
                 if (tempAnswerArray.length > 2) {
                     var test = document.getElementsByClassName('selectTwoQuest');
-                    console.log("test: " + test[id].checked);
                     test[id].checked = false;
                     switch (letterSelected) {
                         case "A":
@@ -404,13 +393,11 @@ var MyApp;
                     this.answers[questArrayPos] = tempAnswerArray;
                     this.messageMin = "You need to select two answers!";
                     this.needTwo[questArrayPos] = true;
-                    console.log(this.answers);
                 }
                 else if (tempAnswerArray.length == 2) {
                     this.answers[questArrayPos] = tempAnswerArray;
                     this.messageMin = "";
                     this.needTwo[questArrayPos] = false;
-                    console.log(this.answers);
                 }
                 else {
                     this.answers[questArrayPos] = "";
@@ -419,33 +406,25 @@ var MyApp;
             };
             PracticeTestController.prototype.submitExam = function (out) {
                 this.$scope.$broadcast('timer-stop');
-                console.log('exam submitted');
                 var self = this;
                 var unansweredArray = [];
                 var gradeArray = [];
                 var submitExamQuest = this.questions;
-                console.log(this.answers);
-                console.log(this.answers.length);
                 for (var i = 0; i < this.questions.length; i++) {
                     if (this.answers[i]) {
-                        console.log(this.answers[i]);
                         if (this.questions[i].selectTwo != "Y") {
                             if (this.questions[i].correctAnswer[0] == this.answers[i][0]) {
-                                console.log("You got question #" + (i + 1) + " right!");
                                 gradeArray[i] = "Right";
                             }
                             else {
-                                console.log("You got question #" + (i + 1) + " wrong!");
                                 gradeArray[i] = "Wrong";
                             }
                         }
                         else {
                             if (this.questions[i].correctAnswer[0] == this.answers[i][0] && this.questions[i].correctAnswer[1] == this.answers[i][1]) {
-                                console.log("You got question #" + (i + 1) + " right!");
                                 gradeArray[i] = "Right";
                             }
                             else {
-                                console.log("You got question #" + (i + 1) + " wrong!");
                                 gradeArray[i] = "Wrong";
                             }
                         }
@@ -457,13 +436,10 @@ var MyApp;
                 }
                 if (unansweredArray.length > 0 && out != 'outoftime') {
                     var yn = confirm('You have not answered all the questions. Are you sure you want to submit?');
-                    console.log("yn: " + yn);
                     if (yn == true) {
-                        console.log("yn - should be true: " + yn);
                         gradeExam();
                     }
                     else {
-                        console.log("yn - should be false: " + yn);
                         self.$scope.$broadcast('timer-start');
                     }
                 }
@@ -471,8 +447,6 @@ var MyApp;
                     gradeExam();
                 }
                 function gradeExam() {
-                    console.log('gradeExam() called');
-                    console.log("gradeArray: " + gradeArray);
                     if (unansweredArray.length > 0) {
                         self.message2 = "You didn't answer the following questions: " + unansweredArray + ". Grading commencing....";
                     }
@@ -481,7 +455,6 @@ var MyApp;
                     }
                     var string = "";
                     var numRight = 0;
-                    console.log(submitExamQuest.length);
                     for (var j = 0; j < submitExamQuest.length; j++) {
                         string += "Question #" + (j + 1) + " is " + gradeArray[j] + "! ";
                         if (gradeArray[j] == "Right") {
@@ -490,9 +463,7 @@ var MyApp;
                     }
                     self.submitted = true;
                     var finalGrade = Math.round(numRight / submitExamQuest.length * 100);
-                    console.log(finalGrade);
                     self.message4 = "Your grade is " + finalGrade + "%";
-                    console.log(string);
                     self.message3 = string;
                     if (out == "outoftime") {
                         self.message5 = "You ran out of time!";
@@ -527,13 +498,25 @@ var MyApp;
                     _this.examsAvailable = response.data['exams'];
                     console.log("this.examsAvailable: " + JSON.stringify(_this.examsAvailable));
                 });
+                this.accountService = accountService;
+                this.http = $http;
             }
             AdminController.prototype.assignExam = function (student, examNum, index) {
                 var _this = this;
                 console.log("index: " + index);
-                console.log("this.students[index]: " + this.students[index]);
+                console.log("this.students[index]: " + JSON.stringify(this.students[index]));
                 var examName = this.examsAvailable[0].examNames[examNum];
-                this.http.get('/adminExamAssign', { params: { examNum: examNum, examName: examName, student: student } }).then(function (response) {
+                console.log("examName: " + examName);
+                this.http.get('/adminExamAssign', {
+                    params: {
+                        examNum: examNum,
+                        examName: examName,
+                        student: student
+                    },
+                    headers: {
+                        Authorization: 'Bearer ' + this.accountService.getToken()
+                    }
+                }).then(function (response) {
                     _this.message = 'success';
                     console.log("response.data: " + response.data);
                     console.log("JSON.stringify(response.data): " + JSON.stringify(response.data));
@@ -849,6 +832,9 @@ var MyApp;
                 $rootScope.$on('navUpdate', function () {
                     console.log('navUpdated');
                     _this.isLoggedIn = accountService.isLoggedIn();
+                    console.log("this.isLoggedIn: " + _this.isLoggedIn);
+                    _this.isAdmin = accountService.isAdmin();
+                    console.log("this.isAdmin: " + _this.isAdmin);
                     if (_this.isLoggedIn) {
                         _this.currentUser = accountService.currentUser();
                         if (_this.currentUser.avatar) {
@@ -856,7 +842,6 @@ var MyApp;
                             _this.currentUser.avatar = "https://s." + _this.currentUser.avatar + "?s=30&r=x&d=retro";
                             console.log("avatar: " + _this.currentUser.avatar);
                         }
-                        _this.isAdmin = accountService.isAdmin();
                     }
                 });
             }
