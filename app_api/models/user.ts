@@ -12,7 +12,7 @@ var userSchema = new mongoose.Schema({
   resetPasswordToken: String,
   resetPasswordExpires: Date,
   practiceTests: Object,
-  grades: Object,
+  gradeArray: Object,
   examsAvailable: Array,
   examNames: Object,
   created_at: Date,

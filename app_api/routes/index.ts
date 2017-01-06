@@ -14,6 +14,8 @@ var ctrlAdmin = require('../controllers/admin');
 // student
 router.get('/profile', auth, ctrlProfile.profileRead);
 router.get('/examBank', auth, ctrlProfile.examBank);
+router.post('/examUpdate', auth, ctrlProfile.examUpdate);
+router.post('/gradeExam', auth, ctrlProfile.gradeExam);
 
 // admin
 router.get('/admin', auth, ctrlAdmin.adminRead);

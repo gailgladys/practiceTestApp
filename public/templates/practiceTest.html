@@ -22,6 +22,12 @@
     <div ng-hide="vm.submitted" ng-show="vm.message == 'Good Luck!'" class="row">
       <h2 style="text-align:center;">{{vm.message}}</h2>
       <timer ng-if="vm.message == 'Good Luck!'"  finish-callback="vm.submitExam('outoftime')" countdown="1800" interval="1000">{{minutes}} minute{{minutesS}}, {{seconds}} second{{secondsS}}.</timer>
+      <div ng-if="vm.message == 'Good Luck!'" class="progress">
+        <div class="progress-bar" role="progressbar" aria-valuenow="{{(vm.answered/vm.questions.length)*100}}"
+        aria-valuemin="0" aria-valuemax="100" style="width:{{(vm.answered/vm.questions.length)*100}}%">
+          {{(vm.answered/vm.questions.length)*100 | number:0}}%
+        </div>
+      </div>
       <div class="col-xs-3">
         <div class="row">
           <div ng-repeat="question in vm.questions" style="margin-top: 5px;" class="col-xs-6">

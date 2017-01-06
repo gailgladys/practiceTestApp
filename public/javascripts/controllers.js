@@ -273,8 +273,10 @@ var MyApp;
                 }).then(function (response) {
                     _this.student = response.data;
                     var avatar = _this.student.avatar;
-                    _this.student.avatar = _this.student.avatar.substring(6, _this.student.avatar.length);
-                    _this.student.avatar = "https://s." + _this.student.avatar + "?s=100&r=x&d=retro";
+                    if (avatar) {
+                        _this.student.avatar = _this.student.avatar.substring(6, _this.student.avatar.length);
+                        _this.student.avatar = "https://s." + _this.student.avatar + "?s=100&r=x&d=retro";
+                    }
                     _this.examsAvailable = _this.student.examsAvailable;
                     _this.message = "";
                 });
@@ -282,6 +284,7 @@ var MyApp;
                 this.moreMessage = "";
                 this.messageMin = "";
                 this.message5 = "";
+                this.answered = 0;
                 this.http = $http;
                 this.currentPage = 1;
                 this.log = $log;
@@ -335,6 +338,12 @@ var MyApp;
             };
             PracticeTestController.prototype.enterAnswer1 = function (questNum) {
                 var questArrayPos = parseInt(questNum);
+                if (this.answers[questArrayPos]) {
+                    console.log('already answered this question - do no increment');
+                }
+                else {
+                    this.answered++;
+                }
                 var tempAnswerArray = [];
                 tempAnswerArray.push(this.studentAnswer[questArrayPos]);
                 if (tempAnswerArray.length > 0) {
@@ -390,22 +399,36 @@ var MyApp;
                     this.moreMessage = "You can only pick two!";
                 }
                 else if (tempAnswerArray.length == 1) {
+                    if (this.answers[questArrayPos]) {
+                        console.log('already answered this question need to check if you had two selected');
+                        if (this.answers[questArrayPos].length == 2) {
+                            this.answered--;
+                        }
+                    }
                     this.answers[questArrayPos] = tempAnswerArray;
                     this.messageMin = "You need to select two answers!";
                     this.needTwo[questArrayPos] = true;
                 }
                 else if (tempAnswerArray.length == 2) {
+                    this.answered++;
                     this.answers[questArrayPos] = tempAnswerArray;
                     this.messageMin = "";
                     this.needTwo[questArrayPos] = false;
                 }
                 else {
+                    if (this.answers[questArrayPos]) {
+                        console.log('already answered this question need to check if you had two selected');
+                        if (this.answers[questArrayPos].length == 2) {
+                            this.answered--;
+                        }
+                    }
                     this.answers[questArrayPos] = "";
                     this.messageMin = "You need to select an answer!";
                 }
             };
             PracticeTestController.prototype.submitExam = function (out) {
                 this.$scope.$broadcast('timer-stop');
+                this.attemptNum = 0;
                 var self = this;
                 var unansweredArray = [];
                 var gradeArray = [];
@@ -469,6 +492,32 @@ var MyApp;
                         self.message5 = "You ran out of time!";
                         self.$scope.$apply();
                     }
+                    console.log("Exam Number: " + self.examSelect);
+                    console.log("SubExam Number: " + self.subexamSelect);
+                    console.log("Answered: " + self.answered);
+                    console.log("Answers: " + self.answers);
+                    console.log("ElapsedTime: " + self.elapsedTime);
+                    console.log("FinalGrade: " + finalGrade);
+                    console.log("RightWrongArray: " + gradeArray);
+                    var data = {
+                        examNum: self.examSelect,
+                        subExamNum: self.subexamSelect,
+                        attemptNum: self.attemptNum,
+                        answered: self.answered,
+                        answers: self.answers,
+                        elapsedTime: self.elapsedTime,
+                        finalGrade: finalGrade,
+                        rightWrongArray: gradeArray,
+                        created_at: new Date()
+                    };
+                    console.log("data: " + JSON.stringify(data));
+                    self.http.post('/gradeExam', data, {
+                        headers: {
+                            Authorization: 'Bearer ' + self.accountService.getToken()
+                        }
+                    }).then(function (response) {
+                        console.log("response.data: " + response.data);
+                    });
                 }
             };
             return PracticeTestController;

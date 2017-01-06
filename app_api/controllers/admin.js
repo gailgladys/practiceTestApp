@@ -78,6 +78,7 @@ module.exports.adminExamAssign = function (req, res) {
             Question.find({ examNum: examNum_1 }, function (err, questions) {
                 var examObj = {};
                 var displayObj = {};
+                var subExamGradeObj = {};
                 var counter = 0;
                 var tempArray = [];
                 var tempDBArray = [];
@@ -86,7 +87,8 @@ module.exports.adminExamAssign = function (req, res) {
                 var db = "";
                 console.log('questions.length: ', questions.length);
                 while (questions.length > 0) {
-                    console.log('subExam: ', subExam, ' questions.length: ', questions.length, ' tempArray.length: ', tempArray.length);
+                    subExamGradeObj[subExam] = [{ answered: 0, answers: [], elapsedTime: 0, finalGrade: 0, rightWrongArray: [], completed: false }];
+                    console.log('subExam: ', subExam, ' questions.length: ', questions.length, ' tempArray.length: ', tempArray.length, ' subExamGradeObj: ', subExamGradeObj);
                     if (tempArray.length < 20) {
                         dis = questions.splice(Math.random() * questions.length, 1)[0];
                         console.log('questions.length: ', questions.length);
@@ -112,6 +114,14 @@ module.exports.adminExamAssign = function (req, res) {
                     console.log("examNum: " + examNum_1);
                     console.log("examName: " + examName_1);
                     console.log("student.status: " + student_1.status);
+                    if (student_1.gradeArray) {
+                        console.log('gradeArray exists on this student');
+                    }
+                    else {
+                        console.log('gradeArray does not exist on this student, need to initialize');
+                        student_1['gradeArray'] = {};
+                    }
+                    student_1['gradeArray'][examNum_1] = subExamGradeObj;
                     if (student_1.practiceTests) {
                         student_1.practiceTests[examNum_1] = examObj;
                     }
@@ -133,7 +143,7 @@ module.exports.adminExamAssign = function (req, res) {
                         console.log("student.examsAvailable: " + student_1.examsAvailable);
                     }
                     console.log("student(modified): " + student_1);
-                    User.update({ '_id': student_1._id }, { 'practiceTests': student_1.practiceTests, 'examsAvailable': student_1.examsAvailable, 'examNames': student_1.examNames }, function (err, resp) {
+                    User.update({ '_id': student_1._id }, { 'practiceTests': student_1.practiceTests, 'gradeArray': student_1.gradeArray, 'examsAvailable': student_1.examsAvailable, 'examNames': student_1.examNames }, function (err, resp) {
                         if (err)
                             return err;
                         console.log('edited practiceTest');

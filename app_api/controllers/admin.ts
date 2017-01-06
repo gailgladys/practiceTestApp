@@ -83,6 +83,7 @@ module.exports.adminExamAssign = function(req, res) {
         // construct the sub exams
         let examObj = {};
         let displayObj = {};
+        let subExamGradeObj = {};
         let counter = 0;
         let tempArray = [];
         let tempDBArray = [];
@@ -91,7 +92,8 @@ module.exports.adminExamAssign = function(req, res) {
         let db = "";
         console.log('questions.length: ',questions.length);
         while(questions.length>0){
-          console.log('subExam: ', subExam,' questions.length: ', questions.length,' tempArray.length: ',tempArray.length);
+          subExamGradeObj[subExam] = [{answered: 0, answers: [],elapsedTime: 0, finalGrade: 0, rightWrongArray: [],completed:false}];
+          console.log('subExam: ', subExam,' questions.length: ', questions.length,' tempArray.length: ',tempArray.length,' subExamGradeObj: ',subExamGradeObj);
           if(tempArray.length<20){
             dis = questions.splice(Math.random()*questions.length,1)[0];
             console.log('questions.length: ', questions.length);
@@ -119,6 +121,13 @@ module.exports.adminExamAssign = function(req, res) {
           console.log(`examNum: ${examNum}`);
           console.log(`examName: ${examName}`);
           console.log(`student.status: ${student.status}`);
+          if(student.gradeArray){
+            console.log('gradeArray exists on this student')
+          } else {
+            console.log('gradeArray does not exist on this student, need to initialize');
+            student['gradeArray']={};
+          }
+          student['gradeArray'][examNum]=subExamGradeObj;
           if(student.practiceTests){
             student.practiceTests[examNum]=examObj;
           } else {
@@ -138,7 +147,7 @@ module.exports.adminExamAssign = function(req, res) {
             console.log(`student.examsAvailable: ${student.examsAvailable}`);
           }
           console.log(`student(modified): ${student}`);
-          User.update({'_id':student._id}, {'practiceTests': student.practiceTests, 'examsAvailable': student.examsAvailable, 'examNames': student.examNames}, function(err, resp) {
+          User.update({'_id':student._id}, {'practiceTests': student.practiceTests, 'gradeArray': student.gradeArray,'examsAvailable': student.examsAvailable, 'examNames': student.examNames}, function(err, resp) {
             if (err) return err;
             console.log('edited practiceTest');
             console.log(`resp: ${JSON.stringify(resp)}`);
