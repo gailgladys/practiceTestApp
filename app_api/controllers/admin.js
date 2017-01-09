@@ -87,7 +87,7 @@ module.exports.adminExamAssign = function (req, res) {
                 var db = "";
                 console.log('questions.length: ', questions.length);
                 while (questions.length > 0) {
-                    subExamGradeObj[subExam] = { attempt: { answered: 0, answers: [], elapsedTime: 0 }, gradeAverage: 0, recentGrade: 0, submitted: [] };
+                    subExamGradeObj[subExam] = { attempt: { answered: 0, answers: [], elapsedTime: 0, studentAnswer: [], studentAnswerA: [], studentAnswerB: [], studentAnswerC: [], studentAnswerD: [], studentAnswerE: [], needTwo: [], active: false }, gradeAverage: 0, recentGrade: 0, submitted: [] };
                     console.log('subExam: ', subExam, ' questions.length: ', questions.length, ' tempArray.length: ', tempArray.length, ' subExamGradeObj: ', subExamGradeObj);
                     if (tempArray.length < 20) {
                         dis = questions.splice(Math.random() * questions.length, 1)[0];

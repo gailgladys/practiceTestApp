@@ -7,27 +7,32 @@
         <div ng-hide="vm.message == 'Good Luck!'">
           <h1 class="center">Select an Exam to Take</h1>
           <div class="row">
-            <div class="col-xs-3" ng-repeat="exam in vm.examsAvailable">
+            <div class="col-xs-4" ng-repeat="exam in vm.examsAvailable">
               <h2 class="center">{{exam}} {{vm.student.examNames[exam]}}</h2>
               <div class="row">
-                <div style="margin-bottom: 8px;" class="col-xs-3" ng-repeat="(key,value) in vm.student.practiceTests[exam]">
+                <div style="margin-bottom: 8px;" class="col-xs-6 center" ng-repeat="(key,value) in vm.student.practiceTests[exam]">
                   <button ng-click="vm.selectExam(exam,key)" style="min-width: 44px;" class="btn btn-success" type="button" name="button">{{key}}</button>
                 </div>
               </div>
               <div class="row">
                 <div style="margin-bottom: 8px;" class="col-xs-6" ng-repeat="(key,value) in vm.student.gradeArray[exam]">
                   <!-- <button ng-click="vm.selectExam(exam,key)" style="min-width: 44px;" class="btn btn-success" type="button" name="button">{{key}}</button> -->
-                  <h4>Subexam {{key}}</h4>
-                  <div ng-repeat="attempt in value">
-                    <h5>Attempt {{$index+1}}</h5>
-                    <div class="progress">
-                      <div class="progress-bar" role="progressbar" aria-valuenow="{{(attempt.answered/vm.student.practiceTests[exam][key].length)*100}}"
-                      aria-valuemin="0" aria-valuemax="100" style="width:{{(attempt.answered/vm.student.practiceTests[exam][key].length)*100}}%">
-                        {{(attempt.answered/vm.student.practiceTests[exam][key].length)*100 | number:0}}%
-                      </div>
+                  <!-- <h4>Subexam {{key}}</h4>
+                  <h4>{{value.attempt}}</h4>
+                  <h4>Elapsed time: <span ng-show="Math.floor((value.attempt.elapsedTime-1)/60)">{{Math.floor((value.attempt.elapsedTime-1)/60)}} minutes,</span> {{(value.attempt.elapsedTime-1)%60}} seconds</h4> -->
+                  <h5 style="margin-top:0px;" class="center" ng-show="value.attempt.active" >New Attempt</h5>
+                  <div ng-click="vm.selectSaved(exam,key)" style="margin-bottom:8px;" ng-show="value.attempt.active" class="progress center">
+                    <div class="progress-bar" role="progressbar" aria-valuenow="{{(value.attempt.answered/vm.student.practiceTests[exam][key].length)*100}}"
+                    aria-valuemin="0" aria-valuemax="100" style="width:{{(value.attempt.answered/vm.student.practiceTests[exam][key].length)*100}}%">
+                      {{(value.attempt.answered/vm.student.practiceTests[exam][key].length)*100 | number:0}}%
                     </div>
-                    <p>ElapsedTime: {{attempt.elapsedTime}}</p>
                   </div>
+                  <h5 class="center" ng-show="value.attempt.active" >Saved Attempt</h5>
+                  <!-- <div ng-repeat="attempt in value">
+                    <h5>Attempt {{$index+1}}</h5>
+
+
+                  </div> -->
                 </div>
               </div>
             </div>
@@ -37,7 +42,7 @@
     </div>
     <div ng-hide="vm.submitted" ng-show="vm.message == 'Good Luck!'" class="row">
       <h2 style="text-align:center;">{{vm.message}}</h2>
-      <timer ng-if="vm.message == 'Good Luck!'"  finish-callback="vm.submitExam('outoftime')" countdown="1800" interval="1000">{{minutes}} minute{{minutesS}}, {{seconds}} second{{secondsS}}.</timer>
+      <timer ng-if="vm.message == 'Good Luck!'"  finish-callback="vm.submitExam('outoftime')" countdown="1800-vm.elapsedTime" interval="1000">{{minutes}} minute{{minutesS}}, {{seconds}} second{{secondsS}}.</timer>
       <div ng-if="vm.message == 'Good Luck!'" class="progress">
         <div class="progress-bar" role="progressbar" aria-valuenow="{{(vm.answered/vm.questions.length)*100}}"
         aria-valuemin="0" aria-valuemax="100" style="width:{{(vm.answered/vm.questions.length)*100}}%">

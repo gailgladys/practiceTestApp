@@ -363,6 +363,44 @@ export class QuestionFormController {
         });
       }
 
+      selectSaved(exam,subexam){
+        console.log('clicked progress bar');
+        console.log(`exam: ${exam}, subexam: ${subexam}`);
+        this.examSelect = exam;
+        this.subexamSelect = subexam;
+        this.examNameSelect = this.student.examNames[exam];
+        let self = this;
+        this.http.get('/examBank', {
+          params: {
+            questArray: this.student.practiceTests[exam][subexam]
+          },
+          headers: {
+            Authorization: 'Bearer '+ this.accountService.getToken()
+          }
+          }).then((response) => {
+          if (response.data.length){
+            this.totalItems = response.data.length;
+            self.message = "Good Luck!";
+            this.questions = response.data;
+            var attempt = self.student.gradeArray[this.examSelect][this.subexamSelect]['attempt'];
+            console.log(`attempt: ${JSON.stringify(attempt)}`);
+            self.answers = attempt.answers;
+            self.answered = attempt.answered;
+            self.studentAnswer = attempt.studentAnswer;
+            self.studentAnswerA = attempt.studentAnswerA;
+            self.studentAnswerB = attempt.studentAnswerB;
+            self.studentAnswerC = attempt.studentAnswerC;
+            self.studentAnswerD = attempt.studentAnswerD;
+            self.studentAnswerE = attempt.studentAnswerE;
+            self.needTwo = attempt.needTwo;
+            self.elapsedTime = attempt.elapsedTime;
+          } else {
+            this.questions = "";
+            self.message = "No matches found for that subexam number";
+          }
+        });
+      }
+
       enterAnswer1(questNum){
         // radio button one choice question
         console.log(`this.studentAnswer: ${this.studentAnswer}`);

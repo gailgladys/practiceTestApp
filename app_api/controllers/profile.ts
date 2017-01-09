@@ -98,14 +98,14 @@ module.exports.examUpdate = function(req, res, next) {
       if(user['gradeArray'][examNum][subExamNum]['attempt']){
         console.log('already have a saved attempt for this sub exam');
         // update info
-        user['gradeArray'][examNum][subExamNum]['attempt'] = {answered: answered, answers: answers, elapsedTime: elapsedTime, studentAnswer: studentAnswer, studentAnswerA: studentAnswerA, studentAnswerB: studentAnswerB, studentAnswerC: studentAnswerC, studentAnswerD: studentAnswerD, studentAnswerE: studentAnswerE, needTwo: needTwo};
+        user['gradeArray'][examNum][subExamNum]['attempt'] = {answered: answered, answers: answers, elapsedTime: elapsedTime, studentAnswer: studentAnswer, studentAnswerA: studentAnswerA, studentAnswerB: studentAnswerB, studentAnswerC: studentAnswerC, studentAnswerD: studentAnswerD, studentAnswerE: studentAnswerE, needTwo: needTwo, active: true};
         User.update({ _id: req.payload._id}, { $set: { gradeArray: user['gradeArray'] }}, function(err,user){
           if (err) return err;
           res.send('updated');
         });
       } else {
         console.log('new attempt for this subexam');
-        user['gradeArray'][examNum][subExamNum]['attempt'] = {answered: answered, answers: answers,elapsedTime: elapsedTime, studentAnswer: studentAnswer, studentAnswerA: studentAnswerA, studentAnswerB: studentAnswerB, studentAnswerC: studentAnswerC, studentAnswerD: studentAnswerD, studentAnswerE: studentAnswerE, needTwo: needTwo};
+        user['gradeArray'][examNum][subExamNum]['attempt'] = {answered: answered, answers: answers,elapsedTime: elapsedTime, studentAnswer: studentAnswer, studentAnswerA: studentAnswerA, studentAnswerB: studentAnswerB, studentAnswerC: studentAnswerC, studentAnswerD: studentAnswerD, studentAnswerE: studentAnswerE, needTwo: needTwo, active: true};
         User.update({ _id: req.payload._id}, { $set: { gradeArray: user['gradeArray'] }}, function(err,user){
           if (err) return err;
           res.send('updated');
