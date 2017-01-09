@@ -59,6 +59,15 @@ namespace MyApp {
               controller: MyApp.Controllers.StudentDisplayController,
               controllerAs: 'vm'
           })
+          .state('GradeDisplay', {
+              url: '/gradeDisplay',
+              templateUrl: "/templates/gradeDisplay.html",
+              data: {
+                requiresAuthentication: true
+              },
+              controller: MyApp.Controllers.GradeDisplayController,
+              controllerAs: 'vm'
+          })
           .state('Register', {
               url: '/register',
               templateUrl: "/templates/register.html",

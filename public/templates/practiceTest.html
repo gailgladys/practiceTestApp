@@ -14,6 +14,22 @@
                   <button ng-click="vm.selectExam(exam,key)" style="min-width: 44px;" class="btn btn-success" type="button" name="button">{{key}}</button>
                 </div>
               </div>
+              <div class="row">
+                <div style="margin-bottom: 8px;" class="col-xs-6" ng-repeat="(key,value) in vm.student.gradeArray[exam]">
+                  <!-- <button ng-click="vm.selectExam(exam,key)" style="min-width: 44px;" class="btn btn-success" type="button" name="button">{{key}}</button> -->
+                  <h4>Subexam {{key}}</h4>
+                  <div ng-repeat="attempt in value">
+                    <h5>Attempt {{$index+1}}</h5>
+                    <div class="progress">
+                      <div class="progress-bar" role="progressbar" aria-valuenow="{{(attempt.answered/vm.student.practiceTests[exam][key].length)*100}}"
+                      aria-valuemin="0" aria-valuemax="100" style="width:{{(attempt.answered/vm.student.practiceTests[exam][key].length)*100}}%">
+                        {{(attempt.answered/vm.student.practiceTests[exam][key].length)*100 | number:0}}%
+                      </div>
+                    </div>
+                    <p>ElapsedTime: {{attempt.elapsedTime}}</p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -112,6 +128,7 @@
     <div ng-hide="vm.submitted" ng-show="vm.message == 'Good Luck!'" class="row">
       <div class="col-xs-8 col-xs-offset-2">
         <input ng-show="vm.message == 'Good Luck!'" ng-click="vm.submitExam('intimes')" type="button" class="btn btn-primary" name="Submit" value="Submit Exam">
+        <input ng-show="vm.message == 'Good Luck!'" ng-click="vm.saveProgress()" type="button" class="btn btn-primary" name="Save Progress" value="Save Progress">
       </div>
     </div>
 

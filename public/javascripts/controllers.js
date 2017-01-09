@@ -298,7 +298,7 @@ var MyApp;
                 this.needTwo = [];
                 this.submitted = false;
                 this.accountService = accountService;
-                this.elapsedTime = 0;
+                this.elapsedTime = 50;
                 this.$scope.$on('timer-tick', function (event, data) {
                     _this.elapsedTime++;
                 });
@@ -337,6 +337,8 @@ var MyApp;
                 });
             };
             PracticeTestController.prototype.enterAnswer1 = function (questNum) {
+                console.log("this.studentAnswer: " + this.studentAnswer);
+                console.log("this.answered: " + this.answered);
                 var questArrayPos = parseInt(questNum);
                 if (this.answers[questArrayPos]) {
                     console.log('already answered this question - do no increment');
@@ -499,15 +501,28 @@ var MyApp;
                     console.log("ElapsedTime: " + self.elapsedTime);
                     console.log("FinalGrade: " + finalGrade);
                     console.log("RightWrongArray: " + gradeArray);
+                    console.log("studentAnswer: " + self.studentAnswer);
+                    console.log("studentAnswerA: " + self.studentAnswerA);
+                    console.log("studentAnswerB: " + self.studentAnswerB);
+                    console.log("studentAnswerC: " + self.studentAnswerC);
+                    console.log("studentAnswerD: " + self.studentAnswerD);
+                    console.log("studentAnswerE: " + self.studentAnswerE);
+                    console.log("needTwo: " + self.needTwo);
                     var data = {
                         examNum: self.examSelect,
                         subExamNum: self.subexamSelect,
-                        attemptNum: self.attemptNum,
                         answered: self.answered,
                         answers: self.answers,
                         elapsedTime: self.elapsedTime,
                         finalGrade: finalGrade,
                         rightWrongArray: gradeArray,
+                        studentAnswer: self.studentAnswer,
+                        studentAnswerA: self.studentAnswerA,
+                        studentAnswerB: self.studentAnswerB,
+                        studentAnswerC: self.studentAnswerC,
+                        studentAnswerD: self.studentAnswerD,
+                        studentAnswerE: self.studentAnswerE,
+                        needTwo: self.needTwo,
                         created_at: new Date()
                     };
                     console.log("data: " + JSON.stringify(data));
@@ -520,10 +535,106 @@ var MyApp;
                     });
                 }
             };
+            PracticeTestController.prototype.saveProgress = function () {
+                var self = this;
+                console.log("Exam Number: " + self.examSelect);
+                console.log("SubExam Number: " + self.subexamSelect);
+                console.log("Answered: " + self.answered);
+                console.log("Answers: " + self.answers);
+                console.log("ElapsedTime: " + self.elapsedTime);
+                console.log("studentAnswer: " + self.studentAnswer);
+                console.log("studentAnswerA: " + self.studentAnswerA);
+                console.log("studentAnswerB: " + self.studentAnswerB);
+                console.log("studentAnswerC: " + self.studentAnswerC);
+                console.log("studentAnswerD: " + self.studentAnswerD);
+                console.log("studentAnswerE: " + self.studentAnswerE);
+                console.log("needTwo: " + self.needTwo);
+                var data = {
+                    examNum: self.examSelect,
+                    subExamNum: self.subexamSelect,
+                    answered: self.answered,
+                    answers: self.answers,
+                    elapsedTime: self.elapsedTime,
+                    studentAnswer: self.studentAnswer,
+                    studentAnswerA: self.studentAnswerA,
+                    studentAnswerB: self.studentAnswerB,
+                    studentAnswerC: self.studentAnswerC,
+                    studentAnswerD: self.studentAnswerD,
+                    studentAnswerE: self.studentAnswerE,
+                    needTwo: self.needTwo,
+                    created_at: new Date()
+                };
+                console.log("data: " + JSON.stringify(data));
+                self.http.post('/examUpdate', data, {
+                    headers: {
+                        Authorization: 'Bearer ' + self.accountService.getToken()
+                    }
+                }).then(function (response) {
+                    console.log("response.data: " + response.data);
+                });
+            };
             return PracticeTestController;
         }());
         Controllers.PracticeTestController = PracticeTestController;
         angular.module("MyApp").controller('PracticeTestController', PracticeTestController);
+        var GradeDisplayController = (function () {
+            function GradeDisplayController(accountService, $http) {
+                var self = this;
+                this.questions = {};
+                $http.get('/profile', {
+                    headers: {
+                        Authorization: 'Bearer ' + accountService.getToken()
+                    }
+                }).then(function (response) {
+                    console.log("response.data: " + response.data);
+                    console.log("JSON.stringify(response.data): " + JSON.stringify(response.data));
+                    self.student = response.data;
+                    console.log("self.student: " + self.student);
+                    var _loop_1 = function (exam) {
+                        var _loop_2 = function (subexam) {
+                            console.log("exam: " + exam + " subexam: " + subexam);
+                            console.log("self.student.practiceTests[exam][subexam]: " + self.student.practiceTests[exam][subexam]);
+                            questArray = self.student.practiceTests[exam][subexam];
+                            $http.get('/examBank', {
+                                params: {
+                                    questArray: questArray
+                                },
+                                headers: {
+                                    Authorization: 'Bearer ' + accountService.getToken()
+                                }
+                            }).then(function (response) {
+                                if (response.data.length) {
+                                    console.log("exam: " + exam + " subexam: " + subexam);
+                                    console.log("response.data: " + response.data);
+                                    if (self.questions[exam]) {
+                                        self.questions[exam][subexam] = response.data;
+                                        console.log("self.questions[exam][subexam]: " + JSON.stringify(self.questions[exam][subexam]));
+                                    }
+                                    else {
+                                        self.questions[exam] = {};
+                                        self.questions[exam][subexam] = response.data;
+                                        console.log("self.questions[exam][subexam]: " + JSON.stringify(self.questions[exam][subexam]));
+                                        console.log("self.questions: " + JSON.stringify(self.questions));
+                                    }
+                                }
+                                else {
+                                    console.log('no response');
+                                }
+                            });
+                        };
+                        for (var subexam in self.student.practiceTests[exam]) {
+                            _loop_2(subexam);
+                        }
+                    };
+                    var questArray;
+                    for (var exam in self.student.practiceTests) {
+                        _loop_1(exam);
+                    }
+                });
+            }
+            return GradeDisplayController;
+        }());
+        Controllers.GradeDisplayController = GradeDisplayController;
         var AdminController = (function () {
             function AdminController(accountService, $state, $http, $stateParams) {
                 var _this = this;
