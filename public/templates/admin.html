@@ -8,9 +8,6 @@
     Exams
   </th>
   <th>
-    Grade Average
-  </th>
-  <th>
     Add an Exam
   </th>
 </thead>
@@ -22,18 +19,15 @@
       </div>
     </td>
     <td>
-      <span ng-repeat="(key,value) in student.practiceTests">Exam {{key}}
+      <span ng-repeat="(key,value) in student.practiceTests">
         <div class="row">
           <div ng-repeat="(subexam,value) in value" class="col-xs-2">
-            SubExam {{subexam}}
             <button ng-click="vm.showModal(student,key,subexam)" class="btn btn-success" type="button" name="button">Exam {{key}} SubExam: {{subexam}}</button>
             Recent Grade: {{student.gradeArray[key][subexam]['recentGrade']}}%
+            Average Grade: {{student.gradeArray[key][subexam]['gradeAverage']}}%
           </div>
         </div>
       </span>
-    </td>
-    <td>
-      test
     </td>
     <td>
       <div ng-repeat="exam in vm.examsAvailable[0].examAvailable">
