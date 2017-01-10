@@ -68,6 +68,15 @@ namespace MyApp {
               controller: MyApp.Controllers.GradeDisplayController,
               controllerAs: 'vm'
           })
+          // .state('AdminGradeDisplay', {
+          //     url: '/adminGradeDisplay',
+          //     templateUrl: "/templates/adminGradeDisplay.html",
+          //     data: {
+          //       requiresAdmin: true
+          //     },
+          //     controller: MyApp.Controllers.AdminGradeDisplayController,
+          //     controllerAs: 'vm'
+          // })
           .state('Register', {
               url: '/register',
               templateUrl: "/templates/register.html",

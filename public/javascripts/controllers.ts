@@ -740,12 +740,81 @@ export class QuestionFormController {
     }
   }
 
+  export class AdminGradeDisplayController {
+    public student;
+    public questions;
+
+    public close() {
+      this.$uibModalInstance.close();
+    }
+
+    constructor(private $uibModalInstance: angular.ui.bootstrap.IModalServiceInstance, accountService: MyApp.Services.AccountService, $http: ng.IHttpService, public selectedStudent, public examNum, public subExamNum) {
+      console.log('hitting AdminGradeDisplayController');
+      console.log(`selectedStudent: ${this.selectedStudent}`);
+      console.log(`examNum: ${this.examNum}`);
+      console.log(`subExamNum: ${this.subExamNum}`);
+      this.student = this.selectedStudent;
+      this.questions = {};
+      let self = this;
+      var questArray = self.student.practiceTests[this.examNum][this.subExamNum];
+      $http.get('/examBank', {
+        params: {
+          questArray: questArray
+        },
+        headers: {
+          Authorization: 'Bearer '+ accountService.getToken()
+        }
+        }).then((response) => {
+          if (response.data.length){
+            console.log(`exam: ${this.examNum} subexam: ${this.subExamNum}`);
+            console.log(`response.data: ${response.data}`);
+            if(self.questions[this.examNum]){
+              self.questions[this.examNum][this.subExamNum] = response.data;
+              console.log(`self.questions[this.examNum][this.subExamNum]: ${JSON.stringify(self.questions[this.examNum][this.subExamNum])}`);
+            } else {
+              self.questions[this.examNum] = {};
+              self.questions[this.examNum][this.subExamNum] = response.data;
+              console.log(`self.questions[this.examNum][this.subExamNum]: ${JSON.stringify(self.questions[this.examNum][this.subExamNum])}`);
+              console.log(`self.questions: ${JSON.stringify(self.questions)}`);
+            }
+            // tempObj[exam]={};
+            // tempObj[exam][subexam] = response.data;
+            // console.log(`tempObj[exam][subexam]: ${JSON.stringify(tempObj[exam][subexam])}`);
+          } else {
+            console.log('no response');
+          }
+        });
+      }
+    }
+
+
+  angular.module("MyApp").controller('AdminGradeDisplayController', AdminGradeDisplayController);
+
   export class AdminController {
       public students;
       public http;
       public message;
       public examsAvailable;
       public accountService;
+
+      // static $inject = ['$modal'];
+
+      showModal(student, examNum, subExamNum) {
+        console.log(`student: ${JSON.stringify(student)}`);
+        console.log(`examNum: ${examNum}`);
+        console.log(`subExamNum: ${subExamNum}`);
+        this.$uibModal.open({
+            templateUrl: '/templates/adminGradeDisplay.html',
+            controller: 'AdminGradeDisplayController',
+            controllerAs: 'modal',
+            resolve: {
+              selectedStudent: () => student,
+              examNum: () => examNum,
+              subExamNum: () => subExamNum
+            },
+            size: 'lg'
+        });
+      }
 
       assignExam(student,examNum,index) {
         console.log(`index: ${index}`);
@@ -769,7 +838,8 @@ export class QuestionFormController {
         });
       }
 
-      constructor(accountService: MyApp.Services.AccountService, public $state: ng.ui.IStateService, $http: ng.IHttpService,$stateParams){
+      constructor(accountService: MyApp.Services.AccountService, public $state: ng.ui.IStateService, $http: ng.IHttpService, $stateParams, private $uibModal: angular.ui.bootstrap.IModalService){
+
         $http.get('/adminAssign', {
           headers: {
             Authorization: 'Bearer '+ accountService.getToken()

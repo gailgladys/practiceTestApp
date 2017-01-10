@@ -1,0 +1,117 @@
+<!-- <div class="modal-header">
+  <h3>Header</h3>
+</div>
+<br>
+<div class="modal-body">
+  <h3>Body</h3>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-default" ng-click="modal.close()">Close</button>
+</div> -->
+
+
+<div class="modal-header" id="login_header">
+    <h3 class="modal-title" id="login_title">Grades Display for {{modal.student.username}}</h3>
+</div>
+<br>
+<div class="modal-body">
+  <div ng-repeat="(test,subexam) in modal.student['gradeArray']">
+    <h1 class="center">Exam {{test}}</h1>
+    <div ng-repeat='(subNum,value) in subexam'>
+      <h1 class="center">Subexam {{subNum}}</h1>
+      <h4>Grade Average: {{value.gradeAverage}}%  Most Recent: {{value.recentGrade}}%</h4>
+      <div ng-repeat='exam in value.submitted'>
+        <h4>Submission #{{$index+1}} Elapsed time: <span ng-show="Math.floor((exam.elapsedTime-1)/60)">{{Math.floor((exam.elapsedTime-1)/60)}} minutes,</span> {{(exam.elapsedTime-1)%60}} seconds Final Grade: {{exam.finalGrade}}%</h4>
+        <div class="row" ng-repeat="question in modal.questions[test][subNum]">
+          <div class="col-xs-8 col-xs-offset-2">
+            <h3 style="margin-left: -50px;font-weight:bold;"><span ng-show="exam.answers[$index][0] == question.correctAnswer[0] && question.selectTwo != 'Y'" class="glyphicon glyphicon-ok-sign green"></span><span ng-show="exam.answers[$index][0] == question.correctAnswer[0] && exam.answers[$index][1] == question.correctAnswer[1] && question.selectTwo == 'Y'" class="glyphicon glyphicon-ok-sign green"></span><span ng-show="exam.answers[$index][0] != question.correctAnswer[0] && question.selectTwo != 'Y'" class="glyphicon glyphicon-remove-sign red"></span><span ng-show="(exam.answers[$index][0] != question.correctAnswer[0] || exam.answers[$index][1] != question.correctAnswer[1]) && question.selectTwo == 'Y'" class="glyphicon glyphicon-remove-sign red"></span>Question # {{$index+1}}</h3>
+            <h4>
+              {{question.question}}
+            </h4>
+            <div ng-hide="question.selectTwo=='Y'">
+              <h5>You Answered {{exam.answers[$index].toString()}} and the Correct Answer is {{question.correctAnswer.toString()}}</h5>
+              <div class="row">
+                <div class="col-xs-2" style="margin-left:-65px;text-align:right;">
+                  <span ng-show="exam.answers[$index][0] == 'A'" class="glyphicon glyphicon-arrow-right black"></span><span ng-show="question.correctAnswer[0] != 'A' && exam.answers[$index][0]== 'A'" class="glyphicon glyphicon-remove-sign red"></span><span ng-show="question.correctAnswer[0] == 'A'" class="glyphicon glyphicon-ok-sign green"></span>A)
+                </div>
+                <div class="col-xs-10" style="margin-left:-25px;">
+                  {{question.answerA}}
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-xs-2" style="margin-left:-65px;text-align:right;">
+                  <span ng-show="exam.answers[$index][0] == 'B'" class="glyphicon glyphicon-arrow-right black"></span><span ng-show="question.correctAnswer[0] != 'B' && (exam.answers[$index][0]== 'B' || exam.answers[$index][1]== 'B')" class="glyphicon glyphicon-remove-sign red"></span><span ng-show="question.correctAnswer[0] == 'B'" class="glyphicon glyphicon-ok-sign green"></span>B)
+                </div>
+                <div class="col-xs-10" style="margin-left:-25px;">
+                  {{question.answerB}}
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-xs-2" style="margin-left:-65px;text-align:right;">
+                  <span ng-show="exam.answers[$index][0] == 'C'" class="glyphicon glyphicon-arrow-right black"></span><span ng-show="question.correctAnswer[0] != 'C' && exam.answers[$index]== 'C'" class="glyphicon glyphicon-remove-sign red"></span><span ng-show="question.correctAnswer[0] == 'C'" class="glyphicon glyphicon-ok-sign green"></span>C)
+                </div>
+                <div class="col-xs-10" style="margin-left:-25px;">
+                  {{question.answerC}}
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-xs-2" style="margin-left:-65px;text-align:right;">
+                  <span ng-show="exam.answers[$index][0] == 'D'" class="glyphicon glyphicon-arrow-right black"></span><span ng-show="question.correctAnswer[0] != 'D' && exam.answers[$index]== 'D'" class="glyphicon glyphicon-remove-sign red"></span><span ng-show="question.correctAnswer[0] == 'D'" class="glyphicon glyphicon-ok-sign green"></span>D)
+                </div>
+                <div class="col-xs-10" style="margin-left:-25px;">
+                  {{question.answerD}}
+                </div>
+              </div>
+            </div>
+            <div ng-show="question.selectTwo=='Y'">
+              <h4>You Answered {{exam.answers[$index].toString()}} and the Correct Answer is {{question.correctAnswer.toString()}}</h4>
+              <div class="row">
+                <div class="col-xs-2" style="margin-left:-65px;text-align:right;">
+                  <span ng-show="exam.answers[$index][0] == 'A' || exam.answers[$index][1] == 'A'" class="glyphicon glyphicon-arrow-right black"></span><span ng-show="(question.correctAnswer[0] != 'A' && question.correctAnswer[1] != 'A') && (exam.answers[$index][0] == 'A' || exam.answers[$index][1] == 'A')" class="glyphicon glyphicon-remove-sign red"></span><span ng-show="question.correctAnswer[0] == 'A' || question.correctAnswer[1] == 'A'" class="glyphicon glyphicon-ok-sign green"></span>A)
+                </div>
+                <div class="col-xs-10" style="margin-left:-25px;">
+                  {{question.answerA}}
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-xs-2" style="margin-left:-65px;text-align:right;">
+                  <span ng-show="exam.answers[$index][0] == 'B' || exam.answers[$index][1] == 'B'" class="glyphicon glyphicon-arrow-right black"></span><span ng-show="(question.correctAnswer[0] != 'B' && question.correctAnswer[1] != 'B') && (exam.answers[$index][0] == 'B' || exam.answers[$index][1] == 'B')" class="glyphicon glyphicon-remove-sign red"></span><span ng-show="question.correctAnswer[0] == 'B' || question.correctAnswer[1] == 'B'" class="glyphicon glyphicon-ok-sign green"></span>B)
+                </div>
+                <div class="col-xs-10" style="margin-left:-25px;">
+                {{question.answerB}}
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xs-2" style="margin-left:-65px;text-align:right;">
+                <span ng-show="exam.answers[$index][0] == 'C' || exam.answers[$index][1] == 'C'" class="glyphicon glyphicon-arrow-right black"></span><span ng-show="(question.correctAnswer[0] != 'C' && question.correctAnswer[1] != 'C') && (exam.answers[$index][0] == 'C' || exam.answers[$index][1] == 'C')" class="glyphicon glyphicon-remove-sign red"></span><span ng-show="question.correctAnswer[0] == 'C' || question.correctAnswer[1] == 'C'" class="glyphicon glyphicon-ok-sign green"></span>C)
+              </div>
+              <div class="col-xs-10" style="margin-left:-25px;">
+                {{question.answerC}}
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xs-2" style="margin-left:-65px;text-align:right;">
+                <span ng-show="exam.answers[$index][0] == 'D' || exam.answers[$index][1] == 'D'" class="glyphicon glyphicon-arrow-right black"></span><span ng-show="(question.correctAnswer[0] != 'D' && question.correctAnswer[1] != 'D') && (exam.answers[$index][0] == 'D' || exam.answers[$index][1] == 'D')" class="glyphicon glyphicon-remove-sign red"></span><span ng-show="question.correctAnswer[0] == 'D' || question.correctAnswer[1] == 'D'" class="glyphicon glyphicon-ok-sign green"></span>D)
+              </div>
+              <div class="col-xs-10" style="margin-left:-25px;">
+                {{question.answerD}}
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xs-2" style="margin-left:-65px;text-align:right;">
+                <span ng-show="exam.answers[$index][0] == 'E' || exam.answers[$index][1] == 'E'" class="glyphicon glyphicon-arrow-right black"></span><span ng-show="(question.correctAnswer[0] != 'E' && question.correctAnswer[1] != 'E') && (exam.answers[$index][0] == 'E' || exam.answers[$index][1] == 'E')" class="glyphicon glyphicon-remove-sign red"></span><span ng-show="question.correctAnswer[0] == 'E' || question.correctAnswer[1] == 'E'" class="glyphicon glyphicon-ok-sign green"></span>E)
+              </div>
+              <div class="col-xs-10" style="margin-left:-25px;">
+                {{question.answerE}}
+              </div>
+            </div>
+            </div>
+          </div>
+    </div>
+  </div>
+  </div>
+  </div>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-default" ng-click="modal.close()">Close</button>
+</div>

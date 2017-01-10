@@ -674,10 +674,60 @@ var MyApp;
             return GradeDisplayController;
         }());
         Controllers.GradeDisplayController = GradeDisplayController;
+        var AdminGradeDisplayController = (function () {
+            function AdminGradeDisplayController($uibModalInstance, accountService, $http, selectedStudent, examNum, subExamNum) {
+                var _this = this;
+                this.$uibModalInstance = $uibModalInstance;
+                this.selectedStudent = selectedStudent;
+                this.examNum = examNum;
+                this.subExamNum = subExamNum;
+                console.log('hitting AdminGradeDisplayController');
+                console.log("selectedStudent: " + this.selectedStudent);
+                console.log("examNum: " + this.examNum);
+                console.log("subExamNum: " + this.subExamNum);
+                this.student = this.selectedStudent;
+                this.questions = {};
+                var self = this;
+                var questArray = self.student.practiceTests[this.examNum][this.subExamNum];
+                $http.get('/examBank', {
+                    params: {
+                        questArray: questArray
+                    },
+                    headers: {
+                        Authorization: 'Bearer ' + accountService.getToken()
+                    }
+                }).then(function (response) {
+                    if (response.data.length) {
+                        console.log("exam: " + _this.examNum + " subexam: " + _this.subExamNum);
+                        console.log("response.data: " + response.data);
+                        if (self.questions[_this.examNum]) {
+                            self.questions[_this.examNum][_this.subExamNum] = response.data;
+                            console.log("self.questions[this.examNum][this.subExamNum]: " + JSON.stringify(self.questions[_this.examNum][_this.subExamNum]));
+                        }
+                        else {
+                            self.questions[_this.examNum] = {};
+                            self.questions[_this.examNum][_this.subExamNum] = response.data;
+                            console.log("self.questions[this.examNum][this.subExamNum]: " + JSON.stringify(self.questions[_this.examNum][_this.subExamNum]));
+                            console.log("self.questions: " + JSON.stringify(self.questions));
+                        }
+                    }
+                    else {
+                        console.log('no response');
+                    }
+                });
+            }
+            AdminGradeDisplayController.prototype.close = function () {
+                this.$uibModalInstance.close();
+            };
+            return AdminGradeDisplayController;
+        }());
+        Controllers.AdminGradeDisplayController = AdminGradeDisplayController;
+        angular.module("MyApp").controller('AdminGradeDisplayController', AdminGradeDisplayController);
         var AdminController = (function () {
-            function AdminController(accountService, $state, $http, $stateParams) {
+            function AdminController(accountService, $state, $http, $stateParams, $uibModal) {
                 var _this = this;
                 this.$state = $state;
+                this.$uibModal = $uibModal;
                 $http.get('/adminAssign', {
                     headers: {
                         Authorization: 'Bearer ' + accountService.getToken()
@@ -700,6 +750,22 @@ var MyApp;
                 this.accountService = accountService;
                 this.http = $http;
             }
+            AdminController.prototype.showModal = function (student, examNum, subExamNum) {
+                console.log("student: " + JSON.stringify(student));
+                console.log("examNum: " + examNum);
+                console.log("subExamNum: " + subExamNum);
+                this.$uibModal.open({
+                    templateUrl: '/templates/adminGradeDisplay.html',
+                    controller: 'AdminGradeDisplayController',
+                    controllerAs: 'modal',
+                    resolve: {
+                        selectedStudent: function () { return student; },
+                        examNum: function () { return examNum; },
+                        subExamNum: function () { return subExamNum; }
+                    },
+                    size: 'lg'
+                });
+            };
             AdminController.prototype.assignExam = function (student, examNum, index) {
                 var _this = this;
                 console.log("index: " + index);

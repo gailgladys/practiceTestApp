@@ -24,14 +24,16 @@
     <td>
       <span ng-repeat="(key,value) in student.practiceTests">Exam {{key}}
         <div class="row">
-          <div ng-repeat="(key,value) in value" class="col-xs-2">
-            SubExam {{key}}
+          <div ng-repeat="(subexam,value) in value" class="col-xs-2">
+            SubExam {{subexam}}
+            <button ng-click="vm.showModal(student,key,subexam)" class="btn btn-success" type="button" name="button">Exam {{key}} SubExam: {{subexam}}</button>
+            Recent Grade: {{student.gradeArray[key][subexam]['recentGrade']}}%
           </div>
         </div>
       </span>
     </td>
     <td>
-      85%
+      test
     </td>
     <td>
       <div ng-repeat="exam in vm.examsAvailable[0].examAvailable">
