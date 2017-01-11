@@ -1,28 +1,19 @@
-<!-- <div class="modal-header">
-  <h3>Header</h3>
-</div>
-<br>
-<div class="modal-body">
-  <h3>Body</h3>
-</div>
-<div class="modal-footer">
-    <button class="btn btn-default" ng-click="modal.close()">Close</button>
-</div> -->
-
-
 <div class="modal-header" id="login_header">
-    <h3 class="modal-title" id="login_title">Grades Display for {{modal.student.username}}</h3>
+    <h3 class="modal-title" id="login_title">Grades Display for <span><img style="height: 30px;" src="{{modal.student.avatar}}" alt="avatar"></span>&nbsp{{modal.student.username}}</h3>
 </div>
 <br>
 <div class="modal-body">
-  <div ng-repeat="(test,subexam) in modal.student['gradeArray']">
-    <h1 class="center">Exam {{test}}</h1>
-    <div ng-repeat='(subNum,value) in subexam'>
-      <h1 class="center">Subexam {{subNum}}</h1>
-      <h4>Grade Average: {{value.gradeAverage}}%  Most Recent: {{value.recentGrade}}%</h4>
-      <div ng-repeat='exam in value.submitted'>
+  <!-- <div ng-repeat="(test,subexam) in modal.student['gradeArray']">
+    <div ng-repeat='(subNum,value) in subexam'> -->
+      <h3 class="center" ng-hide="{{modal.student['gradeArray'][modal.examNum][modal.subExamNum]['submitted'].length}}">No tests submitted yet for Exam {{modal.examNum}} SubExam {{modal.subExamNum}}</h3>
+      <p ng-hide="true">This should be hidden</p>
+      <h1 ng-show="{{modal.submitted.length}}" class="center">Exam {{modal.examNum}}</h1>
+      <h1 ng-show="{{modal.submitted.length}}" class="center">Subexam {{modal.subExamNum}}</h1>
+      <h4 ng-show="{{modal.submitted.length}}">Grade Average: {{modal.student['gradeArray'][modal.examNum][modal.subExamNum]['gradeAverage']}}%  Most Recent: {{modal.student['gradeArray'][modal.examNum][modal.subExamNum]['recentGrade']}}%</h4>
+      <div ng-repeat="exam in modal.submitted">
+
         <h4>Submission #{{$index+1}} Elapsed time: <span ng-show="Math.floor((exam.elapsedTime-1)/60)">{{Math.floor((exam.elapsedTime-1)/60)}} minutes,</span> {{(exam.elapsedTime-1)%60}} seconds Final Grade: {{exam.finalGrade}}%</h4>
-        <div class="row" ng-repeat="question in modal.questions[test][subNum]">
+        <div class="row" ng-repeat="question in modal.questions[modal.examNum][modal.subExamNum]">
           <div class="col-xs-8 col-xs-offset-2">
             <h3 style="margin-left: -50px;font-weight:bold;"><span ng-show="exam.answers[$index][0] == question.correctAnswer[0] && question.selectTwo != 'Y'" class="glyphicon glyphicon-ok-sign green"></span><span ng-show="exam.answers[$index][0] == question.correctAnswer[0] && exam.answers[$index][1] == question.correctAnswer[1] && question.selectTwo == 'Y'" class="glyphicon glyphicon-ok-sign green"></span><span ng-show="exam.answers[$index][0] != question.correctAnswer[0] && question.selectTwo != 'Y'" class="glyphicon glyphicon-remove-sign red"></span><span ng-show="(exam.answers[$index][0] != question.correctAnswer[0] || exam.answers[$index][1] != question.correctAnswer[1]) && question.selectTwo == 'Y'" class="glyphicon glyphicon-remove-sign red"></span>Question # {{$index+1}}</h3>
             <h4>
@@ -107,8 +98,8 @@
             </div>
             </div>
           </div>
-    </div>
-  </div>
+    <!-- </div>
+  </div> -->
   </div>
   </div>
 </div>

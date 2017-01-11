@@ -46,6 +46,11 @@ th, td {
   text-align: center;
 }
 
+.admin-center {
+  text-align: center;
+  margin-bottom: 5px;
+}
+
 .red {
   color: red;
 }

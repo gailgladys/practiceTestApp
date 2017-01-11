@@ -743,6 +743,7 @@ export class QuestionFormController {
   export class AdminGradeDisplayController {
     public student;
     public questions;
+    public submitted;
 
     public close() {
       this.$uibModalInstance.close();
@@ -754,6 +755,7 @@ export class QuestionFormController {
       console.log(`examNum: ${this.examNum}`);
       console.log(`subExamNum: ${this.subExamNum}`);
       this.student = this.selectedStudent;
+      this.submitted = this.student['gradeArray'][this.examNum][this.subExamNum]['submitted'];
       this.questions = {};
       let self = this;
       var questArray = self.student.practiceTests[this.examNum][this.subExamNum];
@@ -974,17 +976,17 @@ export class QuestionFormController {
   angular.module("MyApp").controller('TestController', TestController);
 
 
-    export class TestDisplayController {
-
-      public status;
-
-      constructor($state,$stateParams){
-        this.status = $stateParams.status;
-      }
-
-    }
-
-    angular.module("MyApp").controller('TestDisplayController', TestDisplayController);
+    // export class TestDisplayController {
+    //
+    //   public status;
+    //
+    //   constructor($state,$stateParams){
+    //     this.status = $stateParams.status;
+    //   }
+    //
+    // }
+    //
+    // angular.module("MyApp").controller('TestDisplayController', TestDisplayController);
 
 
     export class LoginController {
@@ -993,11 +995,12 @@ export class QuestionFormController {
       public accountService;
       public user;
       public http;
+      public message1;
+      public message2;
       public message;
 
       loginUser(){
         console.log(`loginUser() this.accountService: ${this.accountService}`);
-        this.message = "Submited";
         let email = this.user.email;
         let password = this.user.password;
         console.log(`Email: ${email}`);
@@ -1009,16 +1012,34 @@ export class QuestionFormController {
              created_at: new Date()
             }
         console.log(`Data object: ${data}`);
-        this.user.email = "";
-        this.user.password = "";
         let self = this;
         let acct = this.accountService;
         console.log(`acct: ${acct}`);
         acct.login(data).then(function(){
+          self.user.email = "";
+          self.user.password = "";
           self.$uibModalInstance.close();
           self.state.go('StudentDisplay');
         }, function(err){
-          alert(err);
+          console.log(`err: ${JSON.stringify(err)}`);
+          console.log(`err.data.message: ${err.data.message}`);
+          if(err.data.message == 'User not found'){
+            self.user.email = "";
+            self.message1 = err.data.message;
+            self.message2 = "";
+            self.message = "";
+          } else if(err.data.message == "Password is wrong"){
+            self.user.password = "";
+            self.message2 = err.data.message;
+            self.message1 = "";
+            self.message = "";
+          } else {
+            self.user.email = "";
+            self.user.password = "";
+            self.message = err.data.message;
+            self.message1 = "";
+            self.message2 = "";
+          }
         });
 
       }
@@ -1031,7 +1052,9 @@ export class QuestionFormController {
         this.accountService = accountService;
         this.http = $http;
         this.state = $state;
-        this.message = "This is the login form";
+        this.message = "";
+        this.message1 = "";
+        this.message2 = "";
       }
 
     }
@@ -1210,7 +1233,7 @@ export class QuestionFormController {
             acct.reset(data).then(function(){
               console.log(`data: ${JSON.stringify(data)}`);
               self.message = "Password updated."
-              // self.state.go('Login');
+              self.state.go('StudentDisplay');
             }, function(err){
               alert(JSON.stringify(err));
             });

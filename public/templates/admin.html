@@ -1,36 +1,45 @@
 <br><br><br>
 <table border="2" style="padding:30px;text-align:left;">
 <thead style="padding:10px;">
-  <th>
+  <th class="admin-center">
     Student Name
   </th>
-  <th>
-    Exams
+  <th class="admin-center">
+    Assigned Exams
   </th>
-  <th>
+  <th class="admin-center">
     Add an Exam
   </th>
 </thead>
 <tbody id="row" style="padding:10px;">
   <tr ng-repeat="student in vm.students">
     <td class="student" value="$index">
-      <div style="width:60px;display:block;text-align:center;margin-left:5px;" class="label" data-ng-class="{&quot;label-info&quot;: student.role == 'student', &quot;label-success&quot;: student.role == 'admin'}">{{ student.role }}</div><img style="padding: 5px;margin-left:5px;" src="{{student.avatar}}" alt="avatar"><div style="text-align:center;">
+      <div class="admin-center">
+        <p style="width:60px;margin-left:5px;" class="label" data-ng-class="{&quot;label-info&quot;: student.role == 'student', &quot;label-success&quot;: student.role == 'admin'}">{{ student.role }}</p>
+        </br>
+        <img style="padding: 5px;margin-left:5px;" src="{{student.avatar}}" alt="avatar">
+        </br>
         {{student.username}}
       </div>
     </td>
     <td>
       <span ng-repeat="(key,value) in student.practiceTests">
         <div class="row">
-          <div ng-repeat="(subexam,value) in value" class="col-xs-2">
-            <button ng-click="vm.showModal(student,key,subexam)" class="btn btn-success" type="button" name="button">Exam {{key}} SubExam: {{subexam}}</button>
-            Recent Grade: {{student.gradeArray[key][subexam]['recentGrade']}}%
-            Average Grade: {{student.gradeArray[key][subexam]['gradeAverage']}}%
+          <div ng-repeat="(subexam,value) in value" class="col-xs-3 admin-center">
+            <button ng-click="vm.showModal(student,key,subexam)" class="btn btn-success" type="button" name="button">Exam {{key}} SubExam {{subexam}}</button>
+            <div class="admin-center" ng-hide="{{student.gradeArray[key][subexam]['submitted'].length}}">
+              No attempts yet
+            </div>
+            <div class="admin-center" ng-show="{{student.gradeArray[key][subexam]['submitted'].length}}">
+              Recent Grade: {{student.gradeArray[key][subexam]['recentGrade']}}%</br>
+              Average Grade: {{student.gradeArray[key][subexam]['gradeAverage']}}%
+            </div>
           </div>
         </div>
       </span>
     </td>
     <td>
-      <div ng-repeat="exam in vm.examsAvailable[0].examAvailable">
+      <div class="admin-center" ng-repeat="exam in vm.examsAvailable[0].examAvailable">
         <button ng-show="student.examsAvailable.indexOf(exam.toString())==-1" ng-click="vm.assignExam(student,exam,$parent.$index)" type="button" class="btn btn-success" name="button">{{exam}}</button>
       </div>
     </td>

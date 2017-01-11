@@ -1,10 +1,11 @@
 <br><br>
 <div ng-repeat="(test,subexam) in vm.student['gradeArray']">
-  <h1 class="center">Exam {{test}}</h1>
   <div ng-repeat='(subNum,value) in subexam'>
-    <h1 class="center">Subexam {{subNum}}</h1>
-    <h4>Grade Average: {{value.gradeAverage}}%  Most Recent: {{value.recentGrade}}%</h4>
+    <h1 class="center" ng-hide="!value.submitted">No tests submitted yet for Exam {{test}} SubExam {{subNum}}</h1>
     <div ng-repeat='exam in value.submitted'>
+      <h1 class="center">Exam {{test}}</h1>
+      <h1 class="center">Subexam {{subNum}}</h1>
+      <h4>Grade Average: {{value.gradeAverage}}%  Most Recent: {{value.recentGrade}}%</h4>
       <h4>Submission #{{$index+1}} Elapsed time: <span ng-show="Math.floor((exam.elapsedTime-1)/60)">{{Math.floor((exam.elapsedTime-1)/60)}} minutes,</span> {{(exam.elapsedTime-1)%60}} seconds Final Grade: {{exam.finalGrade}}%</h4>
       <div class="row" ng-repeat="question in vm.questions[test][subNum]">
         <div class="col-xs-8 col-xs-offset-2">

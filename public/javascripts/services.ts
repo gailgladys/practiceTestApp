@@ -98,9 +98,15 @@ namespace MyApp.Services {
 
     reset(student) {
       let self = this;
+      console.log(`reset service - student: ${JSON.stringify(student)}`);
       return this.http.post('/reset', student).then(function(data) {
         console.log(`reset service - data: ${JSON.stringify(data)}`);
+        console.log(`reset service - data.data: ${JSON.stringify(data.data)}`);
+        console.log(`reset service - data.data.token: ${JSON.stringify(data.data.token)}`);
+        self.saveToken(data.data.token);
         self.rootScope.$broadcast('navUpdate');
+        // console.log(`reset service - data: ${JSON.stringify(data)}`);
+        // self.rootScope.$broadcast('navUpdate');
       });
     }
 

@@ -97,8 +97,13 @@ module.exports.forgot = function(req, res, next) {
         var to_email = new helper.Email(user.email)
         var subject = "Node.js Password Reset"
         var content = new helper.Content("text/plain", "You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\nPlease click on the following link, or paste this into your browser to complete the process:\n\nhttp://" + req.headers.host + "/reset/" + token + "\n\n")
+        console.log(`helper: ${JSON.stringify(helper)}`);
+        console.log(`from_email: ${JSON.stringify(from_email)}`);
+        console.log(`to_email: ${JSON.stringify(to_email)}`);
+        console.log(`subject: ${subject}`);
+        console.log(`content: ${JSON.stringify(content)}`);
         var mail = new helper.Mail(from_email, subject, to_email, content)
-
+        console.log(`mail: ${JSON.stringify(mail)}`);
         var sg = require('sendgrid')(process.env.SENDGRID_API_KEY);
         var request = sg.emptyRequest({
           method: 'POST',
@@ -107,6 +112,7 @@ module.exports.forgot = function(req, res, next) {
         });
 
         sg.API(request, function(error, response) {
+          console.log(`error: ${error}`);
           console.log(response.statusCode)
           console.log(response.body)
           console.log(response.headers)
@@ -114,7 +120,10 @@ module.exports.forgot = function(req, res, next) {
         res.json({sucess:'email sent'});
       }
     ], function(err) {
-      if (err) return next(err);
+      if (err){
+        console.log(`error: ${err}`);
+        return next(err);
+      }
       return;
     });
   };
@@ -150,6 +159,11 @@ module.exports.forgot = function(req, res, next) {
           var to_email = new helper.Email(user.email)
           var subject = "Your password has been changed"
           var content = new helper.Content("text/plain", "Hello,\n\nThis is a confirmation that the password for your account " + user.email + " has just been changed.\n")
+          console.log(`helper: ${helper}`);
+          console.log(`from_email: ${from_email}`);
+          console.log(`to_email: ${to_email}`);
+          console.log(`subject: ${subject}`);
+          console.log(`content: ${content}`);
           var mail = new helper.Mail(from_email, subject, to_email, content)
 
           var sg = require('sendgrid')(process.env.SENDGRID_API_KEY);
@@ -164,7 +178,14 @@ module.exports.forgot = function(req, res, next) {
             console.log(response.body)
             console.log(response.headers)
           })
-          res.json({sucess:'email sent'});
+          var token;
+          token = user.generateJwt();
+          console.log(`user.save - token: ${token}`);
+          res.status(200);
+          res.json({
+            "token" : token
+          });
+          // res.json({sucess:'email sent'});
         }
       ], function(err) {
         if (err) return next(err);

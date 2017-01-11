@@ -686,6 +686,7 @@ var MyApp;
                 console.log("examNum: " + this.examNum);
                 console.log("subExamNum: " + this.subExamNum);
                 this.student = this.selectedStudent;
+                this.submitted = this.student['gradeArray'][this.examNum][this.subExamNum]['submitted'];
                 this.questions = {};
                 var self = this;
                 var questArray = self.student.practiceTests[this.examNum][this.subExamNum];
@@ -869,25 +870,18 @@ var MyApp;
         }());
         Controllers.TestController = TestController;
         angular.module("MyApp").controller('TestController', TestController);
-        var TestDisplayController = (function () {
-            function TestDisplayController($state, $stateParams) {
-                this.status = $stateParams.status;
-            }
-            return TestDisplayController;
-        }());
-        Controllers.TestDisplayController = TestDisplayController;
-        angular.module("MyApp").controller('TestDisplayController', TestDisplayController);
         var LoginController = (function () {
             function LoginController($uibModalInstance, accountService, $http, $state) {
                 this.$uibModalInstance = $uibModalInstance;
                 this.accountService = accountService;
                 this.http = $http;
                 this.state = $state;
-                this.message = "This is the login form";
+                this.message = "";
+                this.message1 = "";
+                this.message2 = "";
             }
             LoginController.prototype.loginUser = function () {
                 console.log("loginUser() this.accountService: " + this.accountService);
-                this.message = "Submited";
                 var email = this.user.email;
                 var password = this.user.password;
                 console.log("Email: " + email);
@@ -899,16 +893,36 @@ var MyApp;
                     created_at: new Date()
                 };
                 console.log("Data object: " + data);
-                this.user.email = "";
-                this.user.password = "";
                 var self = this;
                 var acct = this.accountService;
                 console.log("acct: " + acct);
                 acct.login(data).then(function () {
+                    self.user.email = "";
+                    self.user.password = "";
                     self.$uibModalInstance.close();
                     self.state.go('StudentDisplay');
                 }, function (err) {
-                    alert(err);
+                    console.log("err: " + JSON.stringify(err));
+                    console.log("err.data.message: " + err.data.message);
+                    if (err.data.message == 'User not found') {
+                        self.user.email = "";
+                        self.message1 = err.data.message;
+                        self.message2 = "";
+                        self.message = "";
+                    }
+                    else if (err.data.message == "Password is wrong") {
+                        self.user.password = "";
+                        self.message2 = err.data.message;
+                        self.message1 = "";
+                        self.message = "";
+                    }
+                    else {
+                        self.user.email = "";
+                        self.user.password = "";
+                        self.message = err.data.message;
+                        self.message1 = "";
+                        self.message2 = "";
+                    }
                 });
             };
             LoginController.prototype.close = function () {
@@ -1070,6 +1084,7 @@ var MyApp;
                 acct.reset(data).then(function () {
                     console.log("data: " + JSON.stringify(data));
                     self.message = "Password updated.";
+                    self.state.go('StudentDisplay');
                 }, function (err) {
                     alert(JSON.stringify(err));
                 });

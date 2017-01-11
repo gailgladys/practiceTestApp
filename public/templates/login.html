@@ -4,8 +4,11 @@
 <br>
 <div class="modal-body">
     <form class="login_body" ng-submit="modal.loginUser()">
+      <h5 style="color:red;" ng-show='modal.message'>{{modal.message}}</h5>
+      <h5 style="color:red;" ng-show='modal.message1'>{{modal.message1}}</h5>
       <input type="email" ng-model="modal.user.email" size="50" placeholder="email" name="email" value="">
       <br><br>
+      <h5 style="color:red;" ng-show='modal.message2'>{{modal.message2}}</h5>
       <input type="password" ng-model="modal.user.password" size="50" placeholder="password" name="password" value="">
       <br><br>
       <input class="btn btn-success btn-lg" type="submit" name="submit" value="Login">
