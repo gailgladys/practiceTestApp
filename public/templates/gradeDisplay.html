@@ -1,10 +1,28 @@
-<br><br>
+<br><br><br>
+<div class="center" style="position: fixed;text-align:center;z-index: 1;background-color:bisque;border-radius:5px;width:100%;height:24px;font-size:20px;">
+  <span ng-repeat="(test,subexam) in vm.student['gradeArray']">
+    |&nbsp<a href="#exam{{test}}">Exam {{test}}</a>
+      <span ng-repeat='(subNum,value) in subexam'>
+        |&nbsp<a href="#subexam{{test}}{{subNum}}">Sub {{subNum}}</a>
+      </span>
+  </span> |
+</div>
+
 <div ng-repeat="(test,subexam) in vm.student['gradeArray']">
+  <section style="margin-top:-35px;padding-bottom: 35px;display: block;" id="exam{{test}}">
+    &nbsp;
+  </section>
+  <h2 class="center">Exam {{test}}</h2>
   <div ng-repeat='(subNum,value) in subexam'>
-    <h1 class="center" ng-hide="!value.submitted">No tests submitted yet for Exam {{test}} SubExam {{subNum}}</h1>
+    <section style="margin-top:-65px;padding-bottom: 65px;display: block;" id="subexam{{test}}{{subNum}}">
+      &nbsp;
+    </section>
+    <h3 style="margin-top:-5px;" class="center">SubExam {{subNum}}</h3>
+    <h3 class="center" ng-hide="!value.submitted">No tests submitted yet for Exam {{test}} SubExam {{subNum}}</h3>
+    <hr style="color:black;background-color:black;height:2px;" ng-hide="!value.submitted">
     <div ng-repeat='exam in value.submitted'>
-      <h1 class="center">Exam {{test}}</h1>
-      <h1 class="center">Subexam {{subNum}}</h1>
+      <!-- <h1 class="center">Exam {{test}}</h1>
+      <h1 class="center">Subexam {{subNum}}</h1> -->
       <h4>Grade Average: {{value.gradeAverage}}%  Most Recent: {{value.recentGrade}}%</h4>
       <h4>Submission #{{$index+1}} Elapsed time: <span ng-show="Math.floor((exam.elapsedTime-1)/60)">{{Math.floor((exam.elapsedTime-1)/60)}} minutes,</span> {{(exam.elapsedTime-1)%60}} seconds Final Grade: {{exam.finalGrade}}%</h4>
       <div class="row" ng-repeat="question in vm.questions[test][subNum]">
@@ -94,5 +112,6 @@
         </div>
   </div>
 </div>
+<hr style="color:black;background-color:black;height:2px;" ng-show="value.submitted.length">
 </div>
 </div>

@@ -185,7 +185,6 @@ module.exports.forgot = function(req, res, next) {
           res.json({
             "token" : token
           });
-          // res.json({sucess:'email sent'});
         }
       ], function(err) {
         if (err) return next(err);

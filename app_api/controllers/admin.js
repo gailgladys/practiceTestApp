@@ -20,6 +20,7 @@ module.exports.adminRead = function (req, res) {
     else {
         User
             .find({})
+            .select('-passwordHash -salt')
             .exec(function (err, users) {
             res.status(200).json(users);
         });
