@@ -48,7 +48,7 @@ module.exports.examUpdate = function (req, res, next) {
         });
     }
     else {
-        console.log("req.body.examName: " + req.body.examNum);
+        console.log("req.body.examNum: " + req.body.examNum);
         var examNum = req.body.examNum;
         var subExamNum = req.body.subExamNum;
         var answered = req.body.answered;

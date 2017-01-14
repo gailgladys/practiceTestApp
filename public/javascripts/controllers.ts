@@ -798,6 +798,7 @@ export class QuestionFormController {
       public message;
       public examsAvailable;
       public accountService;
+      public keys;
 
       // static $inject = ['$modal'];
 
@@ -840,7 +841,15 @@ export class QuestionFormController {
         });
       }
 
+      deleteExam(examNum,studentIndex){
+        console.log(`examNum: ${examNum}`);
+        console.log(`studentIndex: ${studentIndex}`);
+        console.log(`student[studentIndex]: ${JSON.stringify(this.students[studentIndex])}`);
+      }
+
       constructor(accountService: MyApp.Services.AccountService, public $state: ng.ui.IStateService, $http: ng.IHttpService, $stateParams, private $uibModal: angular.ui.bootstrap.IModalService){
+
+        this.keys = Object.keys;
 
         $http.get('/adminAssign', {
           headers: {

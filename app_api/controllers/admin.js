@@ -26,6 +26,35 @@ module.exports.adminRead = function (req, res) {
         });
     }
 };
+module.exports.adminExamDelete = function (req, res) {
+    console.log('hit adminExamDelete');
+    console.log("req: " + req);
+    console.log("req.payload.role: " + req.payload.role);
+    if (!req.payload._id) {
+        res.status(401).json({
+            "message": "UnauthorizedError: private profile"
+        });
+    }
+    else if (req.payload.role != 'admin') {
+        res.status(401).json({
+            "message": "UnauthorizedError: not admin"
+        });
+    }
+    else {
+        console.log("req.body.examNum: " + req.body.examNum);
+        var examNum = req.body.examNum;
+        var studentStr = req.param('student');
+        console.log("studentStr: " + studentStr);
+        var student = JSON.parse(studentStr);
+        console.log("student: " + student);
+        delete student['gradeArray'][examNum];
+        User.update({ _id: req.payload._id }, { $set: { gradeArray: student['gradeArray'] } }, function (err, user) {
+            if (err)
+                return err;
+            res.send('updated');
+        });
+    }
+};
 module.exports.adminAssign = function (req, res) {
     console.log('hit adminAssign');
     console.log("req: " + req);

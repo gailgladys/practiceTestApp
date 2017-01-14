@@ -21,6 +21,7 @@ router.post('/gradeExam', auth, ctrlProfile.gradeExam);
 router.get('/admin', auth, ctrlAdmin.adminRead);
 router.get('/adminAssign', auth, ctrlAdmin.adminAssign);
 router.get('/adminExamAssign', auth, ctrlAdmin.adminExamAssign);
+router.get('/adminExamDelete', auth, ctrlAdmin.adminExamDelete);
 router.get('/testBank', auth, ctrlAdmin.testBank);
 router.post('/questionData', auth, ctrlAdmin.questionData);
 

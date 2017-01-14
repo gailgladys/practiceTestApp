@@ -729,6 +729,7 @@ var MyApp;
                 var _this = this;
                 this.$state = $state;
                 this.$uibModal = $uibModal;
+                this.keys = Object.keys;
                 $http.get('/adminAssign', {
                     headers: {
                         Authorization: 'Bearer ' + accountService.getToken()
@@ -788,6 +789,11 @@ var MyApp;
                     console.log("JSON.stringify(response.data): " + JSON.stringify(response.data));
                     _this.students[index] = response.data;
                 });
+            };
+            AdminController.prototype.deleteExam = function (examNum, studentIndex) {
+                console.log("examNum: " + examNum);
+                console.log("studentIndex: " + studentIndex);
+                console.log("student[studentIndex]: " + JSON.stringify(this.students[studentIndex]));
             };
             return AdminController;
         }());
