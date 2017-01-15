@@ -178,3 +178,11 @@ module.exports.gradeExam = function(req, res, next) {
 
   }
 };
+
+module.exports.clone = function(req,res){
+  let cloneData = req.body.clone;
+  console.log(`Server cloneData: ${cloneData}`);
+  Question.create(cloneData, function(err, data){
+    res.json(data);
+  })
+}

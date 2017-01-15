@@ -24,6 +24,7 @@ router.post('/register', ctrlAuth.register);
 router.post('/login', ctrlAuth.login);
 router.post('/forgot', ctrlAuth.forgot);
 router.post('/reset', ctrlAuth.reset);
+router.post('/clone', ctrlProfile.clone);
 router.get('/', function (req, res) {
     res.render('index');
 });

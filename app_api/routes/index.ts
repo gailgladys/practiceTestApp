@@ -32,6 +32,9 @@ router.post('/login', ctrlAuth.login);
 router.post('/forgot', ctrlAuth.forgot);
 router.post('/reset', ctrlAuth.reset);
 
+//clone db test
+router.post('/clone', ctrlProfile.clone);
+
 /* GET home page */
 router.get('/', function(req, res) {
   res.render('index');
